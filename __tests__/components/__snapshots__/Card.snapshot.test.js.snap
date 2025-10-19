@@ -1,0 +1,270 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Card Component - Snapshot Tests should match snapshot with all props combined 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 24,
+        "padding": 4,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+      {
+        "opacity": 0.8,
+        "transform": [
+          {
+            "scale": 1.1,
+          },
+        ],
+      },
+    ]
+  }
+>
+  <Text>
+    All Props Card
+  </Text>
+</View>
+`;
+
+exports[`Card Component - Snapshot Tests should match snapshot with custom margin 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 32,
+        "padding": 16,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+    ]
+  }
+>
+  <Text>
+    Extra Large Margin Card
+  </Text>
+</View>
+`;
+
+exports[`Card Component - Snapshot Tests should match snapshot with custom padding 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 8,
+        "padding": 24,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+    ]
+  }
+>
+  <Text>
+    Large Padding Card
+  </Text>
+</View>
+`;
+
+exports[`Card Component - Snapshot Tests should match snapshot with custom styles 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 8,
+        "padding": 16,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+      {
+        "backgroundColor": "red",
+        "borderWidth": 2,
+      },
+    ]
+  }
+>
+  <Text>
+    Custom Styled Card
+  </Text>
+</View>
+`;
+
+exports[`Card Component - Snapshot Tests should match snapshot with default props 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 8,
+        "padding": 16,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+    ]
+  }
+>
+  <Text>
+    Default Card
+  </Text>
+</View>
+`;
+
+exports[`Card Component - Snapshot Tests should match snapshot with multiple children 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 8,
+        "padding": 16,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+    ]
+  }
+>
+  <Text>
+    First Child
+  </Text>
+  <Text>
+    Second Child
+  </Text>
+</View>
+`;
+
+exports[`Card Component - Snapshot Tests should match snapshot with nested cards 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 8,
+        "padding": 24,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+    ]
+  }
+>
+  <Text>
+    Outer Card
+  </Text>
+  <View
+    style={
+      [
+        {
+          "elevation": 4,
+          "shadowOffset": {
+            "height": 2,
+            "width": 0,
+          },
+          "shadowOpacity": 0.1,
+          "shadowRadius": 8,
+        },
+        {
+          "backgroundColor": "#FFFFFF",
+          "borderRadius": 12,
+          "margin": 4,
+          "padding": 8,
+          "shadowColor": "rgba(0, 0, 0, 0.1)",
+        },
+      ]
+    }
+  >
+    <Text>
+      Inner Card
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`Card Component - Snapshot Tests should match snapshot with no children 1`] = `
+<View
+  style={
+    [
+      {
+        "elevation": 4,
+        "shadowOffset": {
+          "height": 2,
+          "width": 0,
+        },
+        "shadowOpacity": 0.1,
+        "shadowRadius": 8,
+      },
+      {
+        "backgroundColor": "#FFFFFF",
+        "borderRadius": 12,
+        "margin": 8,
+        "padding": 16,
+        "shadowColor": "rgba(0, 0, 0, 0.1)",
+      },
+    ]
+  }
+/>
+`;
