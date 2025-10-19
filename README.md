@@ -1,15 +1,10 @@
 # TechChallenge3 – Aplicativo de Gerenciamento Financeiro
 
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
-
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
-
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=bugs)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
-
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=coverage)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
-
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
-
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=bugs)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=coverage)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
 
 Aplicativo de gerenciamento financeiro desenvolvido em React Native (Expo)
 
