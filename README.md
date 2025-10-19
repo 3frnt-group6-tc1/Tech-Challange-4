@@ -1,10 +1,14 @@
 # TechChallenge3 – Aplicativo de Gerenciamento Financeiro
 
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=bugs)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=coverage)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)  
+<div>
+
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=bugs)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=coverage)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
+
+</div>
 
 Aplicativo de gerenciamento financeiro desenvolvido em React Native (Expo)
 
@@ -23,14 +27,14 @@ Aplicativo de gerenciamento financeiro desenvolvido em React Native (Expo)
 
 ## 🛠️ Tecnologias & Ferramentas
 
-| Camada       | Tecnologia                                    |
-|--------------|-----------------------------------------------|
-| Linguagem    | React 19 · React Native 0.81 (Expo SDK 54)    |
-| UI           | React Native Components · Expo LinearGradient |
-| Navegação    | `@react-navigation/*`                         |
-| Estado global| Context API (`AuthContext`, `ThemeContext`)   |
-| Backend      | Firebase Authentication (Email/Password)      |
-| Persistência | AsyncStorage                                  |
+| Camada        | Tecnologia                                    |
+| ------------- | --------------------------------------------- |
+| Linguagem     | React 19 · React Native 0.81 (Expo SDK 54)    |
+| UI            | React Native Components · Expo LinearGradient |
+| Navegação     | `@react-navigation/*`                         |
+| Estado global | Context API (`AuthContext`, `ThemeContext`)   |
+| Backend       | Firebase Authentication (Email/Password)      |
+| Persistência  | AsyncStorage                                  |
 
 ---
 
@@ -70,8 +74,8 @@ npm install
 
 ### 3. Configurar o Firebase
 
-1. Acesse [Firebase Console](https://console.firebase.google.com) → **Adicionar projeto**.  
-2. No menu ⚙️ **Configurações do projeto** → **Suas apps** → adicione um app Web (ícone `</>`).  
+1. Acesse [Firebase Console](https://console.firebase.google.com) → **Adicionar projeto**.
+2. No menu ⚙️ **Configurações do projeto** → **Suas apps** → adicione um app Web (ícone `</>`).
 3. Copie o objeto `firebaseConfig` gerado.
 4. Abra `firebase.config.js` e substitua o bloco:
 
@@ -82,13 +86,14 @@ const firebaseConfig = {
   projectId: "<PROJECT_ID>",
   storageBucket: "<PROJECT_ID>.appspot.com",
   messagingSenderId: "<SENDER_ID>",
-  appId: "<APP_ID>"
+  appId: "<APP_ID>",
 };
 ```
 
 5. No Console Firebase → **Build → Authentication → Métodos de login** → habilite **E-mail/Senha**.
-6. Ainda no Console → **Build → Firestore Database** → clique em **Criar banco de dados** e escolha o modo *Test* (para desenvolvimento) ou *Production* conforme sua necessidade.
+6. Ainda no Console → **Build → Firestore Database** → clique em **Criar banco de dados** e escolha o modo _Test_ (para desenvolvimento) ou _Production_ conforme sua necessidade.
 7. Em **Regras** defina permissões adequadas. Para testes locais você pode manter o exemplo a seguir:
+
 ```js
 rules_version = '2';
 service cloud.firestore {
@@ -126,10 +131,10 @@ A aplicação utiliza o **Cloud Firestore** para armazenar transações, categor
 
 Preferências leves são salvas localmente com `@react-native-async-storage/async-storage`:
 
-| Chave                     | Contexto/Finalidade                                |
-|---------------------------|----------------------------------------------------|
-| `theme`                   | Tema selecionado (claro ou escuro)                 |
-| `@currency_settings_<uid>`| Moeda padrão do usuário                            |
+| Chave                      | Contexto/Finalidade                |
+| -------------------------- | ---------------------------------- |
+| `theme`                    | Tema selecionado (claro ou escuro) |
+| `@currency_settings_<uid>` | Moeda padrão do usuário            |
 
 Além disso, o Firebase Auth usa `AsyncStorage` via `initializeAuth` para manter sessões após reiniciar o app.
 
@@ -139,9 +144,9 @@ Não há configuração extra — para limpar dados durante o desenvolvimento ba
 
 ## 📜 Scripts
 
-| Comando          | Descrição                      |
-|------------------|--------------------------------|
-| `npm start`      | Inicia o Metro (alias Expo)    |
-| `npm run android`| Abre emulador Android          |
-| `npm run ios`    | Abre simulador iOS             |
-| `npm run web`    | Abre versão Web (experimental) |
+| Comando           | Descrição                      |
+| ----------------- | ------------------------------ |
+| `npm start`       | Inicia o Metro (alias Expo)    |
+| `npm run android` | Abre emulador Android          |
+| `npm run ios`     | Abre simulador iOS             |
+| `npm run web`     | Abre versão Web (experimental) |
