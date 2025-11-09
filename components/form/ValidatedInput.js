@@ -1,7 +1,7 @@
 import React from "react";
 import { TextInput, View, Text, StyleSheet } from "react-native";
 import { useTheme } from "../../contexts/ThemeContext";
-import { sanitizeInput } from "../../utils/validationRules";
+import { sanitizeInput } from "../../utils/inputSanitizer";
 
 /**
  * Enhanced Input component with built-in validation display and sanitization

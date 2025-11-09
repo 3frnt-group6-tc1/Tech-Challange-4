@@ -12,19 +12,23 @@ const DateField = ({
   control,
   validationRules,
   mode = "datetime",
+  name = "date",
+  label = "Data e Horário *",
   placeholder = "Selecionar data e horário",
 }) => {
   const { theme } = useTheme();
 
+  const textStyles = [styles.label, { color: theme.colors.text }];
+
+  const fieldRules = validationRules && validationRules[name];
+
   return (
     <View style={styles.fieldContainer}>
-      <Text style={[styles.label, { color: theme.colors.text }]}>
-        Data e Horário *
-      </Text>
+      <Text style={textStyles}>{label}</Text>
       <Controller
         control={control}
-        name="date"
-        rules={validationRules.date}
+        name={name}
+        rules={fieldRules}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <>
             <NativeDatePicker

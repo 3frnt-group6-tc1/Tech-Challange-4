@@ -3,34 +3,40 @@ import { Controller } from "react-hook-form";
 import ValidatedInput from "./ValidatedInput";
 
 /**
- * Description field component for transaction forms
- * Handles multiline text input with validation and character limits
+ * Unified text field component for transaction forms
+ * Handles both single-line and multiline text input with validation and character limits
  */
-const DescriptionField = ({
+const TextField = ({
   control,
   validationRules,
-  placeholder = "Digite a descrição (mín. 3 caracteres)",
-  numberOfLines = 3,
-  maxLength = 500,
+  name,
+  label,
+  placeholder,
+  multiline = false,
+  numberOfLines = 1,
+  maxLength = 100,
 }) => {
+  // Get validation rules for the specific field
+  const fieldRules = validationRules && validationRules[name];
+
   return (
     <Controller
       control={control}
-      name="description"
-      rules={validationRules.description}
+      name={name}
+      rules={fieldRules}
       render={({
         field: { onChange, onBlur, value },
         fieldState: { error },
       }) => (
         <ValidatedInput
-          label="Descrição *"
+          label={label}
           placeholder={placeholder}
           value={value}
           onChangeText={onChange}
           onBlur={onBlur}
           error={error?.message}
           hasError={!!error}
-          multiline
+          multiline={multiline}
           numberOfLines={numberOfLines}
           maxLength={maxLength}
         />
@@ -39,4 +45,4 @@ const DescriptionField = ({
   );
 };
 
-export default DescriptionField;
+export default TextField;

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useCallback, useMemo, useRef } from "react";
-import { sanitizeFormData, sanitizeInput } from "../utils/validationRules";
+import { sanitizeFormData, sanitizeInput } from "../utils/inputSanitizer";
 
 /**
  * Enhanced form validation hook that extends react-hook-form with:
@@ -156,18 +156,6 @@ export const useFormValidation = ({
   );
 
   /**
-   * Validates a specific field
-   * @param {string} fieldName - Name of the field to validate
-   * @returns {Promise<boolean>} Validation result
-   */
-  const validateField = useCallback(
-    async (fieldName) => {
-      return await trigger(fieldName);
-    },
-    [trigger]
-  );
-
-  /**
    * Validates all fields
    * @returns {Promise<boolean>} Validation result
    */
@@ -181,9 +169,9 @@ export const useFormValidation = ({
    */
   const resetForm = useCallback(
     (newDefaultValues) => {
-      reset(newDefaultValues);
+      reset(newDefaultValues || defaultValues);
     },
-    [reset]
+    [reset, defaultValues]
   );
 
   /**
@@ -320,7 +308,6 @@ export const useFormValidation = ({
 
     // Enhanced methods
     getFieldProps,
-    validateField,
     validateAllFields,
     setFieldValue,
     getSanitizedValues,

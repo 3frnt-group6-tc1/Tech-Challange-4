@@ -11,21 +11,27 @@ const AmountField = ({
   validationRules,
   formatCurrencyInput,
   currency,
+  name = "amount",
+  label = "Valor *",
+  placeholder,
 }) => {
-  const placeholder = `Digite o valor (ex: ${currency.symbol} 100,50)`;
+  const defaultPlaceholder = `Digite o valor (ex: ${currency.symbol} 100,50)`;
+  const fieldPlaceholder = placeholder || defaultPlaceholder;
+
+  const fieldRules = validationRules && validationRules[name];
 
   return (
     <Controller
       control={control}
-      name="amount"
-      rules={validationRules.amount}
+      name={name}
+      rules={fieldRules}
       render={({
         field: { onChange, onBlur, value },
         fieldState: { error },
       }) => (
         <ValidatedInput
-          label="Valor *"
-          placeholder={placeholder}
+          label={label}
+          placeholder={fieldPlaceholder}
           value={value ? formatCurrencyInput(value) : ""}
           onChangeText={(text) => {
             const numericValue = text.replace(/\D/g, "");

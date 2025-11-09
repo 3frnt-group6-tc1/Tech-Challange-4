@@ -21,15 +21,18 @@ jest.mock("../../hooks/useFormValidation", () => ({
 }));
 
 // Mock validation rules
-jest.mock("../../utils/validationRules", () => ({
-  validationRules: {
-    title: { required: "Title is required" },
-    description: { required: "Description is required" },
-    amount: { required: "Amount is required" },
-    category: { required: "Category is required" },
-    date: { required: "Date is required" },
+jest.mock("../../utils/fieldRules", () => ({
+  fieldValidators: {
+    title: jest.fn(() => ({ required: "Title is required" })),
+    description: jest.fn(() => ({ required: "Description is required" })),
+    amount: jest.fn(() => ({ required: "Amount is required" })),
+    category: jest.fn(() => ({ required: "Category is required" })),
+    date: jest.fn(() => ({ required: "Date is required" })),
   },
-  validationSets: {
+}));
+
+jest.mock("../../utils/formFieldRules", () => ({
+  formValidationSets: {
     transaction: jest.fn(() => ({
       title: { required: "Title is required" },
       description: { required: "Description is required" },
@@ -96,10 +99,10 @@ const TestComponent = ({
 };
 
 describe("useUnifiedTransactionModal", () => {
-  const mockCategories = [
-    { id: "1", name: "Food", type: "expense" },
-    { id: "2", name: "Salary", type: "income" },
-  ];
+  const mockCategories = {
+    expense: ["Food", "Transport", "Housing"],
+    income: ["Salary", "Freelance", "Investments"],
+  };
 
   const mockCurrency = {
     formatCurrencyInput: jest.fn((value) => `$${value}`),
@@ -153,7 +156,7 @@ describe("useUnifiedTransactionModal", () => {
     const categories = JSON.parse(
       getByTestId("available-categories").children[0]
     );
-    expect(categories).toEqual([{ id: "1", name: "Food", type: "expense" }]);
+    expect(categories).toEqual(["Food", "Transport", "Housing"]);
   });
 
   it("should set correct modal title for editing transaction", () => {

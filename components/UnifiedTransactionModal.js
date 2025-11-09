@@ -2,10 +2,9 @@ import { View, Text, StyleSheet, Modal, ScrollView } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
 import { useUnifiedTransactionModal } from "../hooks/useUnifiedTransactionModal";
 import {
-  TitleField,
-  DescriptionField,
+  TextField,
   AmountField,
-  CategoryField,
+  SelectTagField,
   DateField,
   ImageUploadField,
   FormActions,
@@ -13,8 +12,8 @@ import {
 } from "./form";
 
 /**
- * Example of how to refactor UnifiedTransactionModal using the new form components
- * This demonstrates the cleaner, more modular approach
+ * Example of how to refactor UnifiedTransactionModal using the unified form components
+ * This demonstrates the cleaner, more modular approach with TextField for both title and description
  */
 const UnifiedTransactionModal = ({
   visible,
@@ -80,13 +79,26 @@ const UnifiedTransactionModal = ({
             </FieldContainer>
 
             <FieldContainer>
-              <TitleField control={control} validationRules={validationRules} />
+              <TextField
+                control={control}
+                validationRules={validationRules}
+                name="title"
+                label="Título *"
+                placeholder="Digite o título"
+                maxLength={100}
+              />
             </FieldContainer>
 
             <FieldContainer>
-              <DescriptionField
+              <TextField
                 control={control}
                 validationRules={validationRules}
+                name="description"
+                label="Descrição *"
+                placeholder="Digite a descrição (mín. 3 caracteres)"
+                multiline
+                numberOfLines={3}
+                maxLength={500}
               />
             </FieldContainer>
 
@@ -99,10 +111,10 @@ const UnifiedTransactionModal = ({
               />
             </FieldContainer>
 
-            <CategoryField
+            <SelectTagField
               control={control}
               validationRules={validationRules}
-              availableCategories={availableCategories}
+              options={availableCategories}
             />
 
             <DateField control={control} validationRules={validationRules} />

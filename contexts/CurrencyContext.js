@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './AuthContext';
 
@@ -90,12 +90,12 @@ export const CurrencyProvider = ({ children }) => {
     return `${currency.symbol} ${formattedValue}`;
   };
 
-  const parseCurrency = (formattedValue) => {
+  const parseCurrency = useCallback((formattedValue) => {
     if (!formattedValue) return '';
     
     const numericValue = formattedValue.replace(/\D/g, '');
     return (numericValue / 100).toFixed(2);
-  };
+  }, []);
 
   const value = {
     currency,

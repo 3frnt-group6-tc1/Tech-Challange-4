@@ -5,7 +5,7 @@ import { uploadFileToStorage } from "../services/uploadService";
 import { useTransactions } from "../contexts/TransactionsContext";
 import { useCurrency } from "../contexts/CurrencyContext";
 import { useFormValidation } from "./useFormValidation";
-import { validationSets } from "../utils/validationRules";
+import { formValidationSets } from "../utils/formFieldRules";
 
 /**
  * Custom hook for managing transaction modal state and operations
@@ -34,12 +34,12 @@ export const useUnifiedTransactionModal = ({
   const availableCategories = useMemo(() => {
     if (!categories) return [];
     const currentType = transaction ? transaction.type : type;
-    return categories.filter((cat) => cat.type === currentType);
+    return categories[currentType] || [];
   }, [categories, transaction, type]);
 
   // Memoize validation rules to prevent re-computation
   const validationRules = useMemo(
-    () => validationSets.transaction(availableCategories, parseCurrency),
+    () => formValidationSets.transaction(availableCategories, parseCurrency),
     [availableCategories, parseCurrency]
   );
 

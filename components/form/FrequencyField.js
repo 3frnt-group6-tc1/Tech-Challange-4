@@ -4,52 +4,55 @@ import { Controller } from "react-hook-form";
 import { useTheme } from "../../contexts/ThemeContext";
 
 /**
- * Category selector field component for transaction forms
- * Displays available categories as selectable buttons
+ * Frequency selector field component for recurring transaction forms
+ * Displays available frequencies as selectable buttons
  */
-const CategoryField = ({
+const FrequencyField = ({
   control,
   validationRules,
-  availableCategories = [],
+  options = [],
+  name = "frequency",
+  label = "Frequência *",
 }) => {
   const { theme } = useTheme();
 
+  const fieldRules = validationRules && validationRules[name];
+
   return (
     <View style={styles.fieldContainer}>
-      <Text style={[styles.label, { color: theme.colors.text }]}>
-        Categoria *
-      </Text>
+      <Text style={[styles.label, { color: theme.colors.text }]}>{label}</Text>
       <Controller
         control={control}
-        name="category"
-        rules={validationRules.category}
+        name={name}
+        rules={fieldRules}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
           <>
-            <View style={styles.categoryContainer}>
-              {availableCategories.map((cat) => (
+            <View style={styles.frequencyContainer}>
+              {options.map((freq) => (
                 <TouchableOpacity
-                  key={cat}
+                  key={freq.value}
                   style={[
-                    styles.categoryButton,
+                    styles.frequencyButton,
                     {
                       backgroundColor:
-                        value === cat
+                        value === freq.value
                           ? theme.colors.primary
                           : theme.colors.background,
                       borderColor: theme.colors.border,
                     },
                   ]}
-                  onPress={() => onChange(cat)}
+                  onPress={() => onChange(freq.value)}
                 >
                   <Text
                     style={[
-                      styles.categoryText,
+                      styles.frequencyText,
                       {
-                        color: value === cat ? "#ffffff" : theme.colors.text,
+                        color:
+                          value === freq.value ? "#ffffff" : theme.colors.text,
                       },
                     ]}
                   >
-                    {cat}
+                    {freq.label}
                   </Text>
                 </TouchableOpacity>
               ))}
@@ -69,21 +72,23 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: "600",
-    marginBottom: 4,
+    marginBottom: 8,
   },
-  categoryContainer: {
+  frequencyContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
   },
-  categoryButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+  frequencyButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
+    minWidth: 80,
+    alignItems: "center",
   },
-  categoryText: {
-    fontSize: 12,
+  frequencyText: {
+    fontSize: 14,
     fontWeight: "500",
   },
   errorText: {
@@ -93,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CategoryField;
+export default FrequencyField;
