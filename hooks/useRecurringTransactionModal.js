@@ -73,9 +73,9 @@ export const useRecurringTransactionModal = ({
     [transaction, onSave, onClose, parseCurrency]
   );
 
-  // Define form values function
-  const getFormValues = useCallback(
-    (transaction = null) => ({
+  // Memoize default values to prevent infinite loop
+  const defaultValues = useMemo(
+    () => ({
       title: transaction?.title || "",
       description: transaction?.description || "",
       amount: transaction?.amount?.toString() || "",
@@ -84,23 +84,24 @@ export const useRecurringTransactionModal = ({
       nextDueDate:
         transaction?.nextDueDate || new Date().toISOString().split("T")[0],
     }),
-    []
+    [transaction]
   );
-
-  // Reset form when modal opens/closes or transaction changes
-  useEffect(() => {
-    const formData = getFormValues(transaction);
-    resetForm(formData);
-  }, [transaction, visible, resetForm, getFormValues]);
 
   // Form setup using the validation hook
   const { control, handleSubmit, resetForm, errors, isValid } =
     useFormValidation({
-      defaultValues: getFormValues(transaction),
+      defaultValues,
       validationRules: validationRules,
       onSubmit: onSubmitHandler,
       sanitizeOnChange: true,
     });
+
+  // Reset form when modal opens/closes or transaction changes
+  useEffect(() => {
+    if (visible) {
+      resetForm(defaultValues);
+    }
+  }, [transaction, visible, resetForm, defaultValues]);
 
   // Close handler
   const handleClose = useCallback(() => {
