@@ -29,6 +29,18 @@ export const sanitizeInput = (input) => {
     .replace(/\bon\w+="[^"]*"/gi, "")
     .replace(/\bon\w+='[^']*'/gi, "");
 
+  // Trim leading whitespace
+  result = result.trimStart();
+
+  // Replace multiple consecutive spaces with a single space, but preserve trailing space
+  const hasTrailingSpace = result.endsWith(" ");
+  result = result.replace(/\s{2,}/g, " ");
+
+  // Restore single trailing space if it existed
+  if (hasTrailingSpace && !result.endsWith(" ")) {
+    result += " ";
+  }
+
   return result;
 };
 

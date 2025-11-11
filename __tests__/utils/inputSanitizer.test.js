@@ -27,19 +27,31 @@ describe("Input Sanitizer", () => {
     it("should remove javascript URLs", () => {
       const maliciousInput = 'javascript:alert("xss") Normal text';
       const sanitized = sanitizeInput(maliciousInput);
-      expect(sanitized).toBe(" Normal text");
+      expect(sanitized).toBe("Normal text");
     });
 
     it("should remove event handlers", () => {
       const maliciousInput = 'onclick="alert()" onload="evil()" Normal text';
       const sanitized = sanitizeInput(maliciousInput);
-      expect(sanitized).toBe("  Normal text");
+      expect(sanitized).toBe("Normal text");
     });
 
-    it("should trim whitespace", () => {
-      const input = "   Hello World   ";
+    it("should trim leading whitespace but preserve trailing space", () => {
+      const input = " Hello World ";
       const sanitized = sanitizeInput(input);
-      expect(sanitized).toBe("   Hello World   ");
+      expect(sanitized).toBe("Hello World ");
+    });
+
+    it("should trim leading whitespace without trailing space", () => {
+      const input = " Hello World";
+      const sanitized = sanitizeInput(input);
+      expect(sanitized).toBe("Hello World");
+    });
+
+    it("should replace multiple consecutive spaces with single space", () => {
+      const input = "Hello    World";
+      const sanitized = sanitizeInput(input);
+      expect(sanitized).toBe("Hello World");
     });
 
     it("should handle non-string input", () => {
@@ -84,7 +96,7 @@ describe("Input Sanitizer", () => {
     it("should sanitize all string fields in an object", () => {
       const formData = {
         title: '<script>alert("xss")</script>Title',
-        description: "  Description with spaces  ",
+        description: "Description with spaces",
         amount: 100,
         isActive: true,
         nested: {
@@ -95,7 +107,7 @@ describe("Input Sanitizer", () => {
       const sanitized = sanitizeFormData(formData);
 
       expect(sanitized.title).toBe("Title");
-      expect(sanitized.description).toBe("  Description with spaces  ");
+      expect(sanitized.description).toBe("Description with spaces");
       expect(sanitized.amount).toBe(100);
       expect(sanitized.isActive).toBe(true);
       expect(sanitized.nested).toEqual({ field: 'javascript:alert("evil")' }); // Nested objects not sanitized
@@ -215,7 +227,7 @@ describe("Input Sanitizer", () => {
       // Simulate complex form with mixed clean and malicious data
       const formData = {
         title: '<script>alert("xss")</script>Clean Title',
-        description: "  Valid description with spaces  ",
+        description: "Valid description with spaces",
         amount: "100.50",
         category: "food",
         notes: 'javascript:alert("evil") Some notes',
@@ -226,12 +238,10 @@ describe("Input Sanitizer", () => {
       const sanitizedData = sanitizeFormData(formData);
 
       expect(sanitizedData.title).toBe("Clean Title");
-      expect(sanitizedData.description).toBe(
-        "  Valid description with spaces  "
-      );
+      expect(sanitizedData.description).toBe("Valid description with spaces");
       expect(sanitizedData.amount).toBe("100.50");
       expect(sanitizedData.category).toBe("food");
-      expect(sanitizedData.notes).toBe(" Some notes");
+      expect(sanitizedData.notes).toBe("Some notes");
       // Arrays are not automatically sanitized in sanitizeFormData
       expect(sanitizedData.tags).toEqual(["tag1", "tag2<script>evil</script>"]);
     });

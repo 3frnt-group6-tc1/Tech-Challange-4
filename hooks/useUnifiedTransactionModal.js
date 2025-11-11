@@ -81,22 +81,31 @@ export const useUnifiedTransactionModal = ({
     [localImage, parseCurrency, transaction, type, onSave, onClose]
   );
 
-  // Define empty form values
-  const getFormValues = useCallback(
-    (transaction = null) => ({
+  // Memoize default values to prevent infinite loop
+  const defaultValues = useMemo(
+    () => ({
       title: transaction?.title || "",
       description: transaction?.description || "",
       amount: transaction?.amount?.toString() || "",
       category: transaction?.category || "",
       date: transaction?.date || new Date().toISOString().split("T")[0],
     }),
-    []
+    [transaction]
   );
+
+  // Setup form validation with centralized rules
+  const { control, handleSubmit, resetForm, canSubmit } = useFormValidation({
+    defaultValues,
+    validationRules: validationRules,
+    onSubmit: onSubmitHandler,
+    sanitizeOnChange: true,
+  });
 
   // Reset form when transaction or modal visibility changes
   useEffect(() => {
-    const formData = getFormValues(transaction);
-    resetForm(formData);
+    if (visible) {
+      resetForm(defaultValues);
+    }
 
     // Reset local image when modal opens/closes or transaction changes
     if (transaction && transaction.imageUrl) {
@@ -104,15 +113,7 @@ export const useUnifiedTransactionModal = ({
     } else {
       setLocalImage(null);
     }
-  }, [transaction, visible, resetForm, getFormValues]);
-
-  // Setup form validation with centralized rules
-  const { control, handleSubmit, resetForm, canSubmit } = useFormValidation({
-    defaultValues: getFormValues(transaction),
-    validationRules: validationRules,
-    onSubmit: onSubmitHandler,
-    sanitizeOnChange: true,
-  });
+  }, [transaction, visible, resetForm, defaultValues]);
 
   // Pick image from gallery
   const handlePickImage = useCallback(async () => {
