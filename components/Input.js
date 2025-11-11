@@ -1,21 +1,25 @@
-import React from 'react';
-import { TextInput, View, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+import React from "react";
+import { TextInput, View, Text, StyleSheet } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
 
-export const Input = ({ 
-  label, 
-  value, 
-  onChangeText, 
-  placeholder, 
+/**
+ * @deprecated Use ValidatedInput component instead. This Input component will be removed in a future version.
+ * ValidatedInput provides enhanced validation features and better error handling.
+ */
+export const Input = ({
+  label,
+  value,
+  onChangeText,
+  placeholder,
   secureTextEntry = false,
-  keyboardType = 'default',
-  autoCapitalize = 'sentences',
+  keyboardType = "default",
+  autoCapitalize = "sentences",
   error,
   style,
-  ...props 
+  ...props
 }) => {
   const { theme } = useTheme();
-  
+
   const inputStyle = [
     styles.input,
     {
@@ -32,7 +36,12 @@ export const Input = ({
   return (
     <View style={styles.container}>
       {label && (
-        <Text style={[styles.label, { color: theme.colors.text, fontSize: theme.fontSize.sm }]}>
+        <Text
+          style={[
+            styles.label,
+            { color: theme.colors.text, fontSize: theme.fontSize.sm },
+          ]}
+        >
           {label}
         </Text>
       )}
@@ -61,7 +70,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
   },
   input: {

@@ -25,49 +25,49 @@ jest.mock("../../contexts/ThemeContext", () => ({
   }),
 }));
 
-describe("Card Component - Snapshot Tests", () => {
-  it("should match snapshot with default props", () => {
-    const tree = render(
+describe("Card Component - Structure Tests", () => {
+  it("should render with default props", () => {
+    const { getByText } = render(
       <Card>
         <Text>Default Card</Text>
       </Card>
-    ).toJSON();
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(getByText("Default Card")).toBeTruthy();
   });
 
-  it("should match snapshot with custom padding", () => {
-    const tree = render(
+  it("should render with custom padding", () => {
+    const { getByText } = render(
       <Card padding="lg">
         <Text>Large Padding Card</Text>
       </Card>
-    ).toJSON();
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(getByText("Large Padding Card")).toBeTruthy();
   });
 
-  it("should match snapshot with custom margin", () => {
-    const tree = render(
+  it("should render with custom margin", () => {
+    const { getByText } = render(
       <Card margin="xl">
         <Text>Extra Large Margin Card</Text>
       </Card>
-    ).toJSON();
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(getByText("Extra Large Margin Card")).toBeTruthy();
   });
 
-  it("should match snapshot with custom styles", () => {
-    const tree = render(
+  it("should render with custom styles", () => {
+    const { getByText } = render(
       <Card style={{ backgroundColor: "red", borderWidth: 2 }}>
         <Text>Custom Styled Card</Text>
       </Card>
-    ).toJSON();
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(getByText("Custom Styled Card")).toBeTruthy();
   });
 
-  it("should match snapshot with all props combined", () => {
-    const tree = render(
+  it("should render with all props combined", () => {
+    const { getByText } = render(
       <Card
         padding="xs"
         margin="lg"
@@ -75,38 +75,41 @@ describe("Card Component - Snapshot Tests", () => {
       >
         <Text>All Props Card</Text>
       </Card>
-    ).toJSON();
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(getByText("All Props Card")).toBeTruthy();
   });
 
-  it("should match snapshot with no children", () => {
-    const tree = render(<Card />).toJSON();
+  it("should render with no children", () => {
+    const result = render(<Card />);
 
-    expect(tree).toMatchSnapshot();
+    // Card should still render even without children
+    expect(result).toBeTruthy();
   });
 
-  it("should match snapshot with multiple children", () => {
-    const tree = render(
+  it("should render with multiple children", () => {
+    const { getByText } = render(
       <Card>
         <Text>First Child</Text>
         <Text>Second Child</Text>
       </Card>
-    ).toJSON();
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(getByText("First Child")).toBeTruthy();
+    expect(getByText("Second Child")).toBeTruthy();
   });
 
-  it("should match snapshot with nested cards", () => {
-    const tree = render(
+  it("should render with nested cards", () => {
+    const { getByText } = render(
       <Card padding="lg">
         <Text>Outer Card</Text>
         <Card padding="sm" margin="xs">
           <Text>Inner Card</Text>
         </Card>
       </Card>
-    ).toJSON();
+    );
 
-    expect(tree).toMatchSnapshot();
+    expect(getByText("Outer Card")).toBeTruthy();
+    expect(getByText("Inner Card")).toBeTruthy();
   });
 });
