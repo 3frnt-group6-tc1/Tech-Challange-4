@@ -17,7 +17,8 @@ export const useCategoryModal = ({
   visible,
   onClose,
 }) => {
-  const { addCategory, updateCategory, removeCategory } = useTransactions();
+  const { addCategory, updateCategory, removeCategory, categories } =
+    useTransactions();
 
   // Category type options
   const categoryTypes = useMemo(
@@ -40,7 +41,28 @@ export const useCategoryModal = ({
         const categoryName = data.name.trim();
         const categoryType = data.type;
 
+        // Check if category name already exists in the selected type
+        const existingCategories = categories[categoryType] || [];
+        const isDuplicate = existingCategories.some(
+          (cat) => cat.toLowerCase() === categoryName.toLowerCase()
+        );
+
         if (editingCategory) {
+          // When editing, allow the same name if it's the original name
+          const isOriginalName =
+            editingCategory.name.toLowerCase() === categoryName.toLowerCase() &&
+            editingCategory.type === categoryType;
+
+          if (isDuplicate && !isOriginalName) {
+            Alert.alert(
+              "Categoria Duplicada",
+              `Já existe uma categoria chamada "${categoryName}" no tipo ${
+                categoryType === "income" ? "Receita" : "Despesa"
+              }.`
+            );
+            return;
+          }
+
           // Update existing category
           await updateCategory(
             editingCategory.type,
@@ -50,6 +72,17 @@ export const useCategoryModal = ({
           );
           Alert.alert("Sucesso", "Categoria atualizada com sucesso!");
         } else {
+          // When creating new, check for duplicates
+          if (isDuplicate) {
+            Alert.alert(
+              "Categoria Duplicada",
+              `Já existe uma categoria chamada "${categoryName}" no tipo ${
+                categoryType === "income" ? "Receita" : "Despesa"
+              }.`
+            );
+            return;
+          }
+
           // Add new category
           await addCategory(categoryType, categoryName);
           Alert.alert("Sucesso", "Categoria adicionada com sucesso!");
@@ -60,7 +93,7 @@ export const useCategoryModal = ({
         Alert.alert("Erro", error.message);
       }
     },
-    [editingCategory, addCategory, updateCategory, onClose]
+    [editingCategory, addCategory, updateCategory, onClose, categories]
   );
 
   // Memoize default values to prevent infinite loop
