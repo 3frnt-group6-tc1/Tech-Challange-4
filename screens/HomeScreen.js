@@ -21,9 +21,7 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Loading } from "../components/Loading";
 import UnifiedTransactionModal from "../components/UnifiedTransactionModal";
-import { formatDate } from "../utils/dateFormatter";
-import { Image } from "expo-image";
-import ImagePreviewModal from "../components/ImagePreviewModal";
+import TransactionItem from "../components/TransactionItem";
 
 const HomeScreen = ({ navigation }) => {
   const { user } = useAuth();
@@ -34,9 +32,6 @@ const HomeScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState("income");
-  // Estado para preview de imagem
-  const [imagePreviewVisible, setImagePreviewVisible] = useState(false);
-  const [imagePreviewUri, setImagePreviewUri] = useState(null);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -64,12 +59,6 @@ const HomeScreen = ({ navigation }) => {
     } catch (error) {
       console.error("Erro ao adicionar transação:", error);
     }
-  };
-
-  // Função para abrir preview da imagem
-  const handleOpenImagePreview = (uri) => {
-    setImagePreviewUri(uri);
-    setImagePreviewVisible(true);
   };
 
   if (loading) {
@@ -214,17 +203,11 @@ const HomeScreen = ({ navigation }) => {
                 ) : (
                   transactions.map((t, idx) => (
                     <TransactionItem
-                      key={idx}
-                      title={t.title}
-                      category={t.category}
-                      amount={`${
-                        t.type === "income" ? "+ " : "- "
-                      }R$ ${t.amount.toFixed(2)}`}
-                      date={t.date}
-                      type={t.type}
-                      theme={theme}
-                      imageUrl={t.imageUrl}
-                      onImagePress={handleOpenImagePreview}
+                      key={t.id ? `${t.id}-${idx}` : `transaction-${idx}`}
+                      transaction={t}
+                      showImageButton={true}
+                      showEditButton={false}
+                      showDescription={false}
                     />
                   ))
                 )}
@@ -238,94 +221,11 @@ const HomeScreen = ({ navigation }) => {
             onSave={handleSaveTransaction}
             type={modalType}
           />
-          <ImagePreviewModal
-            visible={imagePreviewVisible}
-            imageUri={imagePreviewUri}
-            onClose={() => setImagePreviewVisible(false)}
-          />
         </ScrollView>
       </View>
     </View>
   );
 };
-
-const TransactionItem = ({
-  title,
-  category,
-  amount,
-  date,
-  type,
-  theme,
-  imageUrl,
-  onImagePress,
-}) => (
-  <View style={styles.transactionItem}>
-    <View style={styles.transactionLeft}>
-      <View
-        style={[
-          styles.transactionIconContainer,
-          {
-            backgroundColor:
-              type === "income"
-                ? theme.colors.success + "20"
-                : theme.colors.error + "20",
-          },
-        ]}
-      >
-        <Text
-          style={[
-            styles.transactionIcon,
-            {
-              color:
-                type === "income" ? theme.colors.success : theme.colors.error,
-            },
-          ]}
-        >
-          {type === "income" ? "↗" : "↙"}
-        </Text>
-      </View>
-      <View>
-        <Text style={[styles.transactionTitle, { color: theme.colors.text }]}>
-          {title}
-        </Text>
-        <Text
-          style={[
-            styles.transactionCategory,
-            { color: theme.colors.textSecondary },
-          ]}
-        >
-          {category} • {formatDate(date)}
-        </Text>
-        {imageUrl && (
-          <TouchableOpacity
-            onPress={() => onImagePress && onImagePress(imageUrl)}
-            style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}
-          >
-            <Text
-              style={{
-                color: theme.colors.primary,
-                fontSize: 12,
-                marginRight: 4,
-              }}
-            >
-              🖼️ Ver Imagem
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-    <Text
-      style={[
-        styles.transactionAmount,
-        {
-          color: type === "income" ? theme.colors.success : theme.colors.error,
-        },
-      ]}
-    >
-      {amount}
-    </Text>
-  </View>
-);
 
 const styles = StyleSheet.create({
   container: {
@@ -435,41 +335,6 @@ const styles = StyleSheet.create({
   },
   transactionsList: {
     gap: 12,
-  },
-  transactionItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 8,
-  },
-  transactionLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  transactionIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
-  },
-  transactionIcon: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  transactionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 2,
-  },
-  transactionCategory: {
-    fontSize: 12,
-  },
-  transactionAmount: {
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
 

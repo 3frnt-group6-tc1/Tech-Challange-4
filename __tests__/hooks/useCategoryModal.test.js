@@ -20,6 +20,11 @@ describe("useCategoryModal", () => {
   const mockResetForm = jest.fn();
   const mockSetValue = jest.fn();
 
+  const mockCategories = {
+    income: ["Salário", "Freelance", "Investimentos"],
+    expense: ["Alimentação", "Transporte", "Moradia"],
+  };
+
   let mockSubmitHandler;
 
   beforeEach(() => {
@@ -29,6 +34,7 @@ describe("useCategoryModal", () => {
       addCategory: mockAddCategory,
       updateCategory: mockUpdateCategory,
       removeCategory: mockRemoveCategory,
+      categories: mockCategories,
     });
 
     // Mock useFormValidation with dynamic submit handler
@@ -369,6 +375,233 @@ describe("useCategoryModal", () => {
         { value: "income", label: "Receita" },
         { value: "expense", label: "Despesa" },
       ]);
+    });
+  });
+
+  describe("duplicate category validation", () => {
+    it("should prevent creating a category with an existing name (case-insensitive)", async () => {
+      const { result } = renderHook(() =>
+        useCategoryModal({
+          editingCategory: null,
+          visible: true,
+          onClose: mockOnClose,
+        })
+      );
+
+      await act(async () => {
+        if (mockSubmitHandler) {
+          await mockSubmitHandler({
+            name: "salário", // lowercase, should match "Salário"
+            type: "income",
+          });
+        }
+      });
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Categoria Duplicada",
+        'Já existe uma categoria chamada "salário" no tipo Receita.'
+      );
+      expect(mockAddCategory).not.toHaveBeenCalled();
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
+
+    it("should prevent creating a category with exact match", async () => {
+      const { result } = renderHook(() =>
+        useCategoryModal({
+          editingCategory: null,
+          visible: true,
+          onClose: mockOnClose,
+        })
+      );
+
+      await act(async () => {
+        if (mockSubmitHandler) {
+          await mockSubmitHandler({
+            name: "Alimentação",
+            type: "expense",
+          });
+        }
+      });
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Categoria Duplicada",
+        'Já existe uma categoria chamada "Alimentação" no tipo Despesa.'
+      );
+      expect(mockAddCategory).not.toHaveBeenCalled();
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
+
+    it("should allow creating a category with same name but different type", async () => {
+      const { result } = renderHook(() =>
+        useCategoryModal({
+          editingCategory: null,
+          visible: true,
+          onClose: mockOnClose,
+        })
+      );
+
+      mockAddCategory.mockResolvedValue();
+
+      await act(async () => {
+        if (mockSubmitHandler) {
+          await mockSubmitHandler({
+            name: "Salário", // exists in income, but adding to expense
+            type: "expense",
+          });
+        }
+      });
+
+      expect(Alert.alert).not.toHaveBeenCalledWith(
+        "Categoria Duplicada",
+        expect.any(String)
+      );
+      expect(mockAddCategory).toHaveBeenCalledWith("expense", "Salário");
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Sucesso",
+        "Categoria adicionada com sucesso!"
+      );
+      expect(mockOnClose).toHaveBeenCalled();
+    });
+
+    it("should allow editing category with the same name and type", async () => {
+      const editingCategory = {
+        name: "Salário",
+        type: "income",
+      };
+
+      const { result } = renderHook(() =>
+        useCategoryModal({
+          editingCategory,
+          visible: true,
+          onClose: mockOnClose,
+        })
+      );
+
+      mockUpdateCategory.mockResolvedValue();
+
+      await act(async () => {
+        if (mockSubmitHandler) {
+          await mockSubmitHandler({
+            name: "Salário", // same name
+            type: "income", // same type
+          });
+        }
+      });
+
+      expect(Alert.alert).not.toHaveBeenCalledWith(
+        "Categoria Duplicada",
+        expect.any(String)
+      );
+      expect(mockUpdateCategory).toHaveBeenCalledWith(
+        "income",
+        "income",
+        "Salário",
+        "Salário"
+      );
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Sucesso",
+        "Categoria atualizada com sucesso!"
+      );
+      expect(mockOnClose).toHaveBeenCalled();
+    });
+
+    it("should prevent editing to a duplicate name in the same type", async () => {
+      const editingCategory = {
+        name: "Salário",
+        type: "income",
+      };
+
+      const { result } = renderHook(() =>
+        useCategoryModal({
+          editingCategory,
+          visible: true,
+          onClose: mockOnClose,
+        })
+      );
+
+      await act(async () => {
+        if (mockSubmitHandler) {
+          await mockSubmitHandler({
+            name: "Freelance", // already exists in income
+            type: "income",
+          });
+        }
+      });
+
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Categoria Duplicada",
+        'Já existe uma categoria chamada "Freelance" no tipo Receita.'
+      );
+      expect(mockUpdateCategory).not.toHaveBeenCalled();
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
+
+    it("should allow editing to change type even with same name in target type if original name matches", async () => {
+      const editingCategory = {
+        name: "Transporte",
+        type: "expense",
+      };
+
+      const { result } = renderHook(() =>
+        useCategoryModal({
+          editingCategory,
+          visible: true,
+          onClose: mockOnClose,
+        })
+      );
+
+      mockUpdateCategory.mockResolvedValue();
+
+      await act(async () => {
+        if (mockSubmitHandler) {
+          await mockSubmitHandler({
+            name: "Salário", // exists in income
+            type: "income", // changing type
+          });
+        }
+      });
+
+      // Should be blocked because "Salário" already exists in income and it's not the original name
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Categoria Duplicada",
+        'Já existe uma categoria chamada "Salário" no tipo Receita.'
+      );
+      expect(mockUpdateCategory).not.toHaveBeenCalled();
+    });
+
+    it("should allow creating a new category with unique name", async () => {
+      const { result } = renderHook(() =>
+        useCategoryModal({
+          editingCategory: null,
+          visible: true,
+          onClose: mockOnClose,
+        })
+      );
+
+      mockAddCategory.mockResolvedValue();
+
+      await act(async () => {
+        if (mockSubmitHandler) {
+          await mockSubmitHandler({
+            name: "Nova Categoria Única",
+            type: "income",
+          });
+        }
+      });
+
+      expect(Alert.alert).not.toHaveBeenCalledWith(
+        "Categoria Duplicada",
+        expect.any(String)
+      );
+      expect(mockAddCategory).toHaveBeenCalledWith(
+        "income",
+        "Nova Categoria Única"
+      );
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "Sucesso",
+        "Categoria adicionada com sucesso!"
+      );
+      expect(mockOnClose).toHaveBeenCalled();
     });
   });
 });

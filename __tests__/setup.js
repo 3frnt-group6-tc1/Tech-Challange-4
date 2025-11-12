@@ -28,6 +28,35 @@ jest.mock("react-native", () => {
     Text: React.forwardRef((props, ref) =>
       React.createElement("Text", { ...props, ref })
     ),
+    TextInput: React.forwardRef((props, ref) =>
+      React.createElement("TextInput", { ...props, ref })
+    ),
+    TouchableOpacity: React.forwardRef(
+      ({ onPress, disabled, ...props }, ref) => {
+        const handlePress = (e) => {
+          if (!disabled && onPress) {
+            onPress(e);
+          }
+        };
+        return React.createElement("TouchableOpacity", {
+          ...props,
+          onPress: handlePress,
+          disabled,
+          ref,
+        });
+      }
+    ),
+    Modal: ({ visible, children, ...props }) =>
+      visible ? React.createElement("Modal", props, children) : null,
+    ScrollView: React.forwardRef((props, ref) =>
+      React.createElement("ScrollView", { ...props, ref })
+    ),
+    Image: React.forwardRef((props, ref) =>
+      React.createElement("Image", { ...props, ref })
+    ),
+    ActivityIndicator: React.forwardRef((props, ref) =>
+      React.createElement("ActivityIndicator", { ...props, ref })
+    ),
     Alert: {
       alert: jest.fn(),
     },

@@ -15,6 +15,10 @@ const TextField = ({
   multiline = false,
   numberOfLines = 1,
   maxLength = 100,
+  secureTextEntry = false,
+  keyboardType = "default",
+  autoCapitalize = "sentences",
+  ...props
 }) => {
   // Get validation rules for the specific field
   const fieldRules = validationRules && validationRules[name];
@@ -39,6 +43,10 @@ const TextField = ({
           multiline={multiline}
           numberOfLines={numberOfLines}
           maxLength={maxLength}
+          secureTextEntry={secureTextEntry}
+          keyboardType={keyboardType}
+          autoCapitalize={autoCapitalize}
+          {...props}
         />
       )}
     />
