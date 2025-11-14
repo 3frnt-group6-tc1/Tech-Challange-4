@@ -6,6 +6,8 @@ import {
   onAuthStateChanged 
 } from 'firebase/auth';
 import { auth } from '../firebase.config';
+import { BiometricService } from '../src/infrastructure/services/BiometricService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext({});
 
@@ -25,7 +27,32 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Salvar ID do último usuário logado e credenciais se biometria estiver habilitada
+      if (userCredential.user) {
+        await AsyncStorage.setItem('last_user_id', userCredential.user.uid);
+        
+        // Salvar credenciais para biometria se o usuário quiser
+        const biometricEnabled = await BiometricService.isEnabled(userCredential.user.uid);
+        if (biometricEnabled) {
+          await BiometricService.saveCredentials(
+            userCredential.user.uid,
+            email,
+            password
+          );
+        }
+      }
+      
       return { success: true, user: userCredential.user };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  };
+
+  const loginWithBiometric = async (userId) => {
+    try {
+      const result = await BiometricService.loginWithBiometric(userId, login);
+      return result;
     } catch (error) {
       return { success: false, error: error.message };
     }
@@ -52,6 +79,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     login,
+    loginWithBiometric,
     register,
     logout,
     loading
