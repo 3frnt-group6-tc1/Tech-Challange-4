@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import firestoreService from "../services/firestoreService";
+import { cacheService } from "../src/infrastructure/services";
 
 const TransactionsContext = createContext();
 
@@ -54,6 +55,7 @@ export const TransactionsProvider = ({ children }) => {
     }
   }, [user]);
 
+
   const loadData = async () => {
     if (!user) {
       console.log("Usuário não autenticado, não carregando dados");
@@ -64,11 +66,22 @@ export const TransactionsProvider = ({ children }) => {
 
     try {
       setLoading(true);
+      
+      // Usar cache service para otimizar requisições
       const [userTransactions, userCategories, userRecurring] =
         await Promise.all([
-          firestoreService.getUserTransactions(user.uid),
-          firestoreService.getUserCategories(user.uid),
-          firestoreService.getUserRecurringTransactions(user.uid),
+          cacheService.getTransactions(
+            user.uid,
+            () => firestoreService.getUserTransactions(user.uid)
+          ),
+          cacheService.getCategories(
+            user.uid,
+            () => firestoreService.getUserCategories(user.uid)
+          ),
+          cacheService.getRecurringTransactions(
+            user.uid,
+            () => firestoreService.getUserRecurringTransactions(user.uid)
+          ),
         ]);
 
       console.log("Dados carregados com sucesso:", {
@@ -145,6 +158,8 @@ export const TransactionsProvider = ({ children }) => {
       };
 
       await firestoreService.addUserTransaction(user.uid, newTransaction);
+      // Invalidar cache para forçar atualização na próxima busca
+      await cacheService.invalidateTransactions(user.uid);
       // O listener em tempo real atualizará o estado automaticamente
     } catch (error) {
       console.error("Erro ao adicionar transação:", error);
@@ -171,6 +186,8 @@ export const TransactionsProvider = ({ children }) => {
         updatedTransaction.id,
         updates
       );
+      // Invalidar cache para forçar atualização na próxima busca
+      await cacheService.invalidateTransactions(user.uid);
       // O listener em tempo real atualizará o estado automaticamente
     } catch (error) {
       console.error("Erro ao atualizar transação:", error);
@@ -183,6 +200,8 @@ export const TransactionsProvider = ({ children }) => {
 
     try {
       await firestoreService.deleteUserTransaction(user.uid, id);
+      // Invalidar cache para forçar atualização na próxima busca
+      await cacheService.invalidateTransactions(user.uid);
       // O listener em tempo real atualizará o estado automaticamente
     } catch (error) {
       console.error("Erro ao deletar transação:", error);
@@ -201,6 +220,8 @@ export const TransactionsProvider = ({ children }) => {
       };
 
       await firestoreService.saveUserCategories(user.uid, newCategories);
+      // Atualizar cache com as novas categorias (não apenas invalidar)
+      await cacheService.set(`categories_${user.uid}`, newCategories, 24 * 60 * 60 * 1000);
       setCategories(newCategories);
     } catch (error) {
       console.error("Erro ao adicionar categoria:", error);
@@ -226,6 +247,8 @@ export const TransactionsProvider = ({ children }) => {
       };
 
       await firestoreService.saveUserCategories(user.uid, newCategories);
+      // Atualizar cache com as novas categorias (não apenas invalidar)
+      await cacheService.set(`categories_${user.uid}`, newCategories, 24 * 60 * 60 * 1000);
       setCategories(newCategories);
     } catch (error) {
       console.error("Erro ao remover categoria:", error);
@@ -277,6 +300,12 @@ export const TransactionsProvider = ({ children }) => {
         firestoreService.saveUserCategories(user.uid, newCategories),
       ]);
 
+      // Atualizar caches com os novos dados
+      await Promise.all([
+        cacheService.set(`categories_${user.uid}`, newCategories, 24 * 60 * 60 * 1000),
+        cacheService.invalidateTransactions(user.uid), // Transações podem ter sido atualizadas
+      ]);
+
       setCategories(newCategories);
       // As transações serão atualizadas pelo listener em tempo real
     } catch (error) {
@@ -301,6 +330,8 @@ export const TransactionsProvider = ({ children }) => {
         user.uid,
         newRecurring
       );
+      // Invalidar cache de transações recorrentes
+      await cacheService.invalidateRecurringTransactions(user.uid);
       // O listener em tempo real atualizará o estado automaticamente
     } catch (error) {
       console.error("Erro ao adicionar transação recorrente:", error);
@@ -320,6 +351,8 @@ export const TransactionsProvider = ({ children }) => {
         updatedRecurring.id,
         updates
       );
+      // Invalidar cache de transações recorrentes
+      await cacheService.invalidateRecurringTransactions(user.uid);
       // O listener em tempo real atualizará o estado automaticamente
     } catch (error) {
       console.error("Erro ao atualizar transação recorrente:", error);
@@ -332,6 +365,8 @@ export const TransactionsProvider = ({ children }) => {
 
     try {
       await firestoreService.deleteUserRecurringTransaction(user.uid, id);
+      // Invalidar cache de transações recorrentes
+      await cacheService.invalidateRecurringTransactions(user.uid);
       // O listener em tempo real atualizará o estado automaticamente
     } catch (error) {
       console.error("Erro ao deletar transação recorrente:", error);
