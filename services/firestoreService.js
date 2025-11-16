@@ -28,6 +28,11 @@ class FirestoreService {
       
       return transactions;
     } catch (error) {
+      // Tratar erros de permissão silenciosamente
+      if (error.code === 'permission-denied') {
+        console.warn("Permissão negada para buscar transações. Configure as regras do Firestore.");
+        return [];
+      }
       console.error("Erro ao buscar transações:", error);
       throw error;
     }
@@ -98,10 +103,33 @@ class FirestoreService {
             "Outros",
           ],
         };
-        await this.saveUserCategories(userId, defaultCategories);
+        // Tentar salvar categorias padrão, mas não falhar se não tiver permissão
+        try {
+          await this.saveUserCategories(userId, defaultCategories);
+        } catch (saveError) {
+          if (saveError.code !== 'permission-denied') {
+            console.error("Erro ao salvar categorias padrão:", saveError);
+          }
+        }
         return defaultCategories;
       }
     } catch (error) {
+      // Tratar erros de permissão silenciosamente
+      if (error.code === 'permission-denied') {
+        console.warn("Permissão negada para buscar categorias. Configure as regras do Firestore.");
+        // Retornar categorias padrão mesmo sem permissão
+        return {
+          income: ["Salário", "Freelance", "Investimentos", "Vendas", "Outros"],
+          expense: [
+            "Alimentação",
+            "Transporte",
+            "Moradia",
+            "Saúde",
+            "Lazer",
+            "Outros",
+          ],
+        };
+      }
       console.error("Erro ao buscar categorias:", error);
       throw error;
     }
@@ -134,6 +162,11 @@ class FirestoreService {
       
       return recurringTransactions;
     } catch (error) {
+      // Tratar erros de permissão silenciosamente
+      if (error.code === 'permission-denied') {
+        console.warn("Permissão negada para buscar transações recorrentes. Configure as regras do Firestore.");
+        return [];
+      }
       console.error("Erro ao buscar transações recorrentes:", error);
       throw error;
     }
@@ -189,16 +222,31 @@ class FirestoreService {
       const transactionsRef = collection(db, "users", userId, "transactions");
       const q = query(transactionsRef, orderBy("createdAt", "desc"));
       
-      return onSnapshot(q, (querySnapshot) => {
-        const transactions = [];
-        querySnapshot.forEach((doc) => {
-          transactions.push({ id: doc.id, ...doc.data() });
-        });
-        callback(transactions);
-      });
+      return onSnapshot(
+        q,
+        (querySnapshot) => {
+          const transactions = [];
+          querySnapshot.forEach((doc) => {
+            transactions.push({ id: doc.id, ...doc.data() });
+          });
+          callback(transactions);
+        },
+        (error) => {
+          // Tratar erros de permissão silenciosamente
+          if (error.code === 'permission-denied') {
+            console.warn("Permissão negada para transações. Configure as regras do Firestore.");
+            // Retornar array vazio para não quebrar a aplicação
+            callback([]);
+          } else {
+            console.error("Erro no listener de transações:", error);
+            callback([]);
+          }
+        }
+      );
     } catch (error) {
       console.error("Erro ao configurar listener de transações:", error);
-      throw error;
+      // Retornar função vazia para não quebrar o cleanup
+      return () => {};
     }
   }
 
@@ -208,16 +256,31 @@ class FirestoreService {
       const recurringRef = collection(db, "users", userId, "recurringTransactions");
       const q = query(recurringRef, orderBy("createdAt", "desc"));
       
-      return onSnapshot(q, (querySnapshot) => {
-        const recurringTransactions = [];
-        querySnapshot.forEach((doc) => {
-          recurringTransactions.push({ id: doc.id, ...doc.data() });
-        });
-        callback(recurringTransactions);
-      });
+      return onSnapshot(
+        q,
+        (querySnapshot) => {
+          const recurringTransactions = [];
+          querySnapshot.forEach((doc) => {
+            recurringTransactions.push({ id: doc.id, ...doc.data() });
+          });
+          callback(recurringTransactions);
+        },
+        (error) => {
+          // Tratar erros de permissão silenciosamente
+          if (error.code === 'permission-denied') {
+            console.warn("Permissão negada para transações recorrentes. Configure as regras do Firestore.");
+            // Retornar array vazio para não quebrar a aplicação
+            callback([]);
+          } else {
+            console.error("Erro no listener de transações recorrentes:", error);
+            callback([]);
+          }
+        }
+      );
     } catch (error) {
       console.error("Erro ao configurar listener de transações recorrentes:", error);
-      throw error;
+      // Retornar função vazia para não quebrar o cleanup
+      return () => {};
     }
   }
 }

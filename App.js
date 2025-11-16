@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { TransactionsProvider } from './contexts/TransactionsContext';
 import { CurrencyProvider } from './contexts/CurrencyContext';
+import { cacheService } from './src/infrastructure/services';
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -185,6 +186,13 @@ const AppNavigator = () => {
 };
 
 const App = () => {
+  // Inicializar cache service na inicialização do app
+  useEffect(() => {
+    cacheService.initialize().catch((error) => {
+      console.error('Erro ao inicializar cache service:', error);
+    });
+  }, []);
+
   return (
     <ThemeProvider>
       <CurrencyProvider>

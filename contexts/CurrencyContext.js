@@ -38,9 +38,10 @@ export const CurrencyProvider = ({ children }) => {
   const loadCurrencySettings = async () => {
     try {
       const storageKey = getCurrencyStorageKey();
-      const savedCurrency = await AsyncStorage.getItem(storageKey);
-      if (savedCurrency) {
-        const parsedCurrency = JSON.parse(savedCurrency);
+      const currencyData = await AsyncStorage.getItem(storageKey);
+      
+      if (currencyData) {
+        const parsedCurrency = JSON.parse(currencyData);
         const foundCurrency = CURRENCIES.find(c => c.code === parsedCurrency.code);
         if (foundCurrency) {
           setCurrency(foundCurrency);
