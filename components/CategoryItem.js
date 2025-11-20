@@ -6,7 +6,7 @@ import { useTheme } from "../contexts/ThemeContext";
  * CategoryItem Component
  * Displays a single category with edit and delete actions
  */
-const CategoryItem = ({ category, type, onEdit, onDelete }) => {
+const CategoryItem = React.memo(({ category, type, onEdit, onDelete }) => {
   const { theme } = useTheme();
 
   return (
@@ -35,7 +35,7 @@ const CategoryItem = ({ category, type, onEdit, onDelete }) => {
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   categoryItem: {

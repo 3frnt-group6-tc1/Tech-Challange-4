@@ -28,22 +28,28 @@ const AmountField = ({
       render={({
         field: { onChange, onBlur, value },
         fieldState: { error },
-      }) => (
-        <ValidatedInput
-          label={label}
-          placeholder={fieldPlaceholder}
-          value={value ? formatCurrencyInput(value) : ""}
-          onChangeText={(text) => {
-            const numericValue = text.replace(/\D/g, "");
-            onChange(numericValue);
-          }}
-          onBlur={onBlur}
-          keyboardType="numeric"
-          error={error?.message}
-          hasError={!!error}
-          sanitizeOnChange={false} // We handle currency formatting manually
-        />
-      )}
+      }) => {
+        const handleChangeText = (text) => {
+          const numericValue = text.replace(/\D/g, "");
+          onChange(numericValue);
+        };
+
+        const formattedValue = value ? formatCurrencyInput(value) : "";
+
+        return (
+          <ValidatedInput
+            label={label}
+            placeholder={fieldPlaceholder}
+            value={formattedValue}
+            onChangeText={handleChangeText}
+            onBlur={onBlur}
+            keyboardType="numeric"
+            error={error?.message}
+            hasError={!!error}
+            sanitizeOnChange={false}
+          />
+        );
+      }}
     />
   );
 };

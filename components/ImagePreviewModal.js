@@ -1,11 +1,5 @@
-import {
-  Modal,
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { Modal, View, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { Image } from "expo-image";
 
 const ImagePreviewModal = ({ visible, imageUri, onClose }) => {
   return (
@@ -17,12 +11,14 @@ const ImagePreviewModal = ({ visible, imageUri, onClose }) => {
     >
       <View style={styles.overlay}>
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text>❌</Text>
+          <Text style={styles.closeButtonText}>❌</Text>
         </TouchableOpacity>
         <Image
           source={{ uri: imageUri }}
           style={styles.image}
-          resizeMode="contain"
+          contentFit="contain"
+          transition={300}
+          cachePolicy="memory-disk"
         />
       </View>
     </Modal>
@@ -46,6 +42,10 @@ const styles = StyleSheet.create({
     top: 30,
     right: 30,
     zIndex: 2,
+  },
+  closeButtonText: {
+    fontSize: 24,
+    color: "#fff",
   },
 });
 

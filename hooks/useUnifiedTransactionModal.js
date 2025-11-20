@@ -25,7 +25,12 @@ export const useUnifiedTransactionModal = ({
   onClose,
 }) => {
   const { categories } = useTransactions();
-  const { formatCurrencyInput, parseCurrency, currency } = useCurrency();
+  const {
+    formatCurrencyInput,
+    parseCurrency,
+    currency,
+    formatAmountToDecimal,
+  } = useCurrency();
 
   // State for local image selection
   const [localImage, setLocalImage] = useState(null);
@@ -86,11 +91,11 @@ export const useUnifiedTransactionModal = ({
     () => ({
       title: transaction?.title || "",
       description: transaction?.description || "",
-      amount: transaction?.amount?.toString() || "",
+      amount: formatAmountToDecimal(transaction?.amount),
       category: transaction?.category || "",
       date: transaction?.date || new Date().toISOString().split("T")[0],
     }),
-    [transaction]
+    [transaction, formatAmountToDecimal]
   );
 
   // Setup form validation with centralized rules

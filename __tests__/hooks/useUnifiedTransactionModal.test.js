@@ -107,6 +107,12 @@ describe("useUnifiedTransactionModal", () => {
   const mockCurrency = {
     formatCurrencyInput: jest.fn((value) => `$${value}`),
     parseCurrency: jest.fn((value) => value.replace(/\D/g, "")),
+    formatAmountToDecimal: jest.fn((value) => {
+      if (value === null || value === undefined || value === "") return "";
+      const numericAmount = parseFloat(value);
+      if (isNaN(numericAmount)) return "";
+      return numericAmount.toFixed(2);
+    }),
     currency: { symbol: "$" },
   };
 

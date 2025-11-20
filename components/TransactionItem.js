@@ -15,138 +15,140 @@ import { formatDate } from "../utils/dateFormatter";
  * @param {boolean} showDescription - Whether to show description (default: true)
  * @param {boolean} showBorder - Whether to show bottom border and padding (default: false)
  */
-const TransactionItem = ({
-  transaction,
-  onEdit,
-  showImageButton = true,
-  showEditButton = true,
-  showDescription = true,
-  showBorder = false,
-}) => {
-  const { theme } = useTheme();
-  const { formatCurrency } = useCurrency();
-  const {
-    imagePreviewVisible,
-    imagePreviewUri,
-    openImagePreview,
-    closeImagePreview,
-  } = useImagePreview();
+const TransactionItem = React.memo(
+  ({
+    transaction,
+    onEdit,
+    showImageButton = true,
+    showEditButton = true,
+    showDescription = true,
+    showBorder = false,
+  }) => {
+    const { theme } = useTheme();
+    const { formatCurrency } = useCurrency();
+    const {
+      imagePreviewVisible,
+      imagePreviewUri,
+      openImagePreview,
+      closeImagePreview,
+    } = useImagePreview();
 
-  const getTypeLabel = (type) => {
-    return type === "income" ? "Receita" : "Despesa";
-  };
+    const getTypeLabel = (type) => {
+      return type === "income" ? "Receita" : "Despesa";
+    };
 
-  const getTypeColor = (type) => {
-    return type === "income" ? theme.colors.success : theme.colors.error;
-  };
+    const getTypeColor = (type) => {
+      return type === "income" ? theme.colors.success : theme.colors.error;
+    };
 
-  const getTypeIcon = (type) => {
-    return type === "income" ? "↗" : "↙";
-  };
+    const getTypeIcon = (type) => {
+      return type === "income" ? "↗" : "↙";
+    };
 
-  return (
-    <>
-      <View
-        style={[styles.container, showBorder && styles.containerWithBorder]}
-      >
-        <View style={styles.content}>
-          <View
-            style={[
-              styles.iconContainer,
-              { backgroundColor: getTypeColor(transaction.type) + "20" },
-            ]}
-          >
-            <Text
-              style={[styles.icon, { color: getTypeColor(transaction.type) }]}
+    return (
+      <>
+        <View
+          style={[styles.container, showBorder && styles.containerWithBorder]}
+        >
+          <View style={styles.content}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: getTypeColor(transaction.type) + "20" },
+              ]}
             >
-              {getTypeIcon(transaction.type)}
+              <Text
+                style={[styles.icon, { color: getTypeColor(transaction.type) }]}
+              >
+                {getTypeIcon(transaction.type)}
+              </Text>
+            </View>
+            <View style={styles.info}>
+              <Text style={[styles.title, { color: theme.colors.text }]}>
+                {transaction.title}
+              </Text>
+              <Text
+                style={[styles.category, { color: theme.colors.textSecondary }]}
+              >
+                {transaction.category} • {formatDate(transaction.date)}
+              </Text>
+              {showDescription && transaction.description && (
+                <Text
+                  style={[
+                    styles.description,
+                    { color: theme.colors.textSecondary },
+                  ]}
+                >
+                  {transaction.description}
+                </Text>
+              )}
+            </View>
+          </View>
+          <View style={styles.amountContainer}>
+            <Text
+              style={[styles.amount, { color: getTypeColor(transaction.type) }]}
+            >
+              {transaction.type === "income" ? "+ " : "- "}
+              {formatCurrency(transaction.amount)}
+            </Text>
+            <Text style={[styles.type, { color: theme.colors.textSecondary }]}>
+              {getTypeLabel(transaction.type)}
             </Text>
           </View>
-          <View style={styles.info}>
-            <Text style={[styles.title, { color: theme.colors.text }]}>
-              {transaction.title}
-            </Text>
-            <Text
-              style={[styles.category, { color: theme.colors.textSecondary }]}
-            >
-              {transaction.category} • {formatDate(transaction.date)}
-            </Text>
-            {showDescription && transaction.description && (
-              <Text
+        </View>
+        {(showImageButton && transaction.imageUrl) ||
+        (showEditButton && onEdit) ? (
+          <View style={styles.actions}>
+            {showImageButton && transaction.imageUrl && (
+              <TouchableOpacity
                 style={[
-                  styles.description,
-                  { color: theme.colors.textSecondary },
+                  styles.actionButton,
+                  { backgroundColor: theme.colors.success + "20" },
                 ]}
+                onPress={() => openImagePreview(transaction.imageUrl)}
               >
-                {transaction.description}
-              </Text>
+                <Text
+                  style={[
+                    styles.actionButtonText,
+                    { color: theme.colors.success },
+                  ]}
+                >
+                  🖼️ Ver Imagem
+                </Text>
+              </TouchableOpacity>
+            )}
+            {showEditButton && onEdit && (
+              <TouchableOpacity
+                style={[
+                  styles.actionButton,
+                  { backgroundColor: theme.colors.primary + "20" },
+                ]}
+                onPress={() => onEdit(transaction)}
+              >
+                <Text
+                  style={[
+                    styles.actionButtonText,
+                    { color: theme.colors.primary },
+                  ]}
+                >
+                  ✏️ Editar
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
-        </View>
-        <View style={styles.amountContainer}>
-          <Text
-            style={[styles.amount, { color: getTypeColor(transaction.type) }]}
-          >
-            {transaction.type === "income" ? "+ " : "- "}
-            {formatCurrency(transaction.amount)}
-          </Text>
-          <Text style={[styles.type, { color: theme.colors.textSecondary }]}>
-            {getTypeLabel(transaction.type)}
-          </Text>
-        </View>
-      </View>
-      {(showImageButton && transaction.imageUrl) ||
-      (showEditButton && onEdit) ? (
-        <View style={styles.actions}>
-          {showImageButton && transaction.imageUrl && (
-            <TouchableOpacity
-              style={[
-                styles.actionButton,
-                { backgroundColor: theme.colors.success + "20" },
-              ]}
-              onPress={() => openImagePreview(transaction.imageUrl)}
-            >
-              <Text
-                style={[
-                  styles.actionButtonText,
-                  { color: theme.colors.success },
-                ]}
-              >
-                🖼️ Ver Imagem
-              </Text>
-            </TouchableOpacity>
-          )}
-          {showEditButton && onEdit && (
-            <TouchableOpacity
-              style={[
-                styles.actionButton,
-                { backgroundColor: theme.colors.primary + "20" },
-              ]}
-              onPress={() => onEdit(transaction)}
-            >
-              <Text
-                style={[
-                  styles.actionButtonText,
-                  { color: theme.colors.primary },
-                ]}
-              >
-                ✏️ Editar
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      ) : null}
+        ) : null}
 
-      {imagePreviewVisible && imagePreviewUri === transaction.imageUrl && (
-        <ImagePreviewModal
-          visible={imagePreviewVisible}
-          imageUri={imagePreviewUri}
-          onClose={closeImagePreview}
-        />
-      )}
-    </>
-  );
-};
+        {imagePreviewVisible && imagePreviewUri === transaction.imageUrl && (
+          <ImagePreviewModal
+            visible={imagePreviewVisible}
+            imageUri={imagePreviewUri}
+            onClose={closeImagePreview}
+          />
+        )}
+      </>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {

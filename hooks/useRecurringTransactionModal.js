@@ -21,7 +21,12 @@ export const useRecurringTransactionModal = ({
   onClose,
 }) => {
   const { categories } = useTransactions();
-  const { formatCurrencyInput, parseCurrency, currency } = useCurrency();
+  const {
+    formatCurrencyInput,
+    parseCurrency,
+    currency,
+    formatAmountToDecimal,
+  } = useCurrency();
 
   // Frequency options
   const frequencies = useMemo(
@@ -78,7 +83,7 @@ export const useRecurringTransactionModal = ({
     () => ({
       title: transaction?.title || "",
       description: transaction?.description || "",
-      amount: transaction?.amount?.toString() || "",
+      amount: formatAmountToDecimal(transaction?.amount),
       category: transaction?.category || "",
       frequency: transaction?.frequency || "monthly",
       nextDueDate:
