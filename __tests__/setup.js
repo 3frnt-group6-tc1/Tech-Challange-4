@@ -78,6 +78,16 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
   clear: jest.fn(() => Promise.resolve()),
 }));
 
+// Mock Expo Image
+jest.mock("expo-image", () => {
+  const React = require("react");
+  return {
+    Image: React.forwardRef((props, ref) =>
+      React.createElement("Image", { ...props, ref })
+    ),
+  };
+});
+
 // Mock Firebase
 jest.mock("firebase/app", () => ({
   initializeApp: jest.fn(() => ({})),

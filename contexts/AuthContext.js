@@ -1,23 +1,52 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged 
-} from 'firebase/auth';
-import { auth } from '../firebase.config';
-import { BiometricService } from '../src/infrastructure/services/BiometricService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useState, useContext, useEffect } from "react";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "../firebase.config";
+import { BiometricService } from "../src/infrastructure/services/BiometricService";
+import { PreloaderService } from "../src/infrastructure/services/PreloaderService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [preloadComplete, setPreloadComplete] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
+
+      // Pre-load critical data when user logs in
+      if (user) {
+        try {
+          console.log("AuthContext: Starting data preload for user", user.uid);
+          const preloadResult = await PreloaderService.preloadCriticalData(
+            user.uid
+          );
+
+          if (preloadResult.success) {
+            console.log(
+              "AuthContext: Preload completed successfully",
+              preloadResult.summary
+            );
+          } else {
+            console.warn("AuthContext: Preload failed", preloadResult.error);
+          }
+
+          setPreloadComplete(true);
+        } catch (error) {
+          console.error("AuthContext: Error during preload", error);
+          setPreloadComplete(true); // Continue even if preload fails
+        }
+      } else {
+        setPreloadComplete(false);
+      }
+
       setLoading(false);
     });
 
@@ -26,14 +55,20 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
       // Salvar ID do último usuário logado e credenciais se biometria estiver habilitada
       if (userCredential.user) {
-        await AsyncStorage.setItem('last_user_id', userCredential.user.uid);
-        
+        await AsyncStorage.setItem("last_user_id", userCredential.user.uid);
+
         // Salvar credenciais para biometria se o usuário quiser
-        const biometricEnabled = await BiometricService.isEnabled(userCredential.user.uid);
+        const biometricEnabled = await BiometricService.isEnabled(
+          userCredential.user.uid
+        );
         if (biometricEnabled) {
           await BiometricService.saveCredentials(
             userCredential.user.uid,
@@ -42,7 +77,7 @@ export const AuthProvider = ({ children }) => {
           );
         }
       }
-      
+
       return { success: true, user: userCredential.user };
     } catch (error) {
       return { success: false, error: error.message };
@@ -60,7 +95,11 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       return { success: true, user: userCredential.user };
     } catch (error) {
       return { success: false, error: error.message };
@@ -82,20 +121,17 @@ export const AuthProvider = ({ children }) => {
     loginWithBiometric,
     register,
     logout,
-    loading
+    loading,
+    preloadComplete,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   }
   return context;
 };

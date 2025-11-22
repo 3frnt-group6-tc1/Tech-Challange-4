@@ -2,33 +2,29 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { useTheme } from "../contexts/ThemeContext";
 
-export const Card = ({
-  children,
-  style,
-  padding = "md",
-  margin = "sm",
-  ...otherProps
-}) => {
-  const { theme } = useTheme();
+export const Card = React.memo(
+  ({ children, style, padding = "md", margin = "sm", ...otherProps }) => {
+    const { theme } = useTheme();
 
-  const cardStyle = [
-    styles.card,
-    {
-      backgroundColor: theme.colors.card,
-      padding: theme.spacing[padding],
-      margin: theme.spacing[margin],
-      borderRadius: theme.borderRadius.md,
-      shadowColor: theme.colors.shadow,
-    },
-    ...(Array.isArray(style) ? style : [style]),
-  ].filter(Boolean);
+    const cardStyle = [
+      styles.card,
+      {
+        backgroundColor: theme.colors.card,
+        padding: theme.spacing[padding],
+        margin: theme.spacing[margin],
+        borderRadius: theme.borderRadius.md,
+        shadowColor: theme.colors.shadow,
+      },
+      ...(Array.isArray(style) ? style : [style]),
+    ].filter(Boolean);
 
-  return (
-    <View style={cardStyle} {...otherProps}>
-      {children}
-    </View>
-  );
-};
+    return (
+      <View style={cardStyle} {...otherProps}>
+        {children}
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   card: {

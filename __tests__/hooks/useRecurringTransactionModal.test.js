@@ -37,6 +37,12 @@ describe("useRecurringTransactionModal", () => {
   const mockResetForm = jest.fn();
   const mockFormatCurrencyInput = jest.fn();
   const mockParseCurrency = jest.fn();
+  const mockFormatAmountToDecimal = jest.fn((amount) => {
+    if (amount === null || amount === undefined || amount === "") return "";
+    const numericAmount = parseFloat(amount);
+    if (isNaN(numericAmount)) return "";
+    return numericAmount.toFixed(2);
+  });
 
   // Mock data
   const mockCategories = {
@@ -86,6 +92,7 @@ describe("useRecurringTransactionModal", () => {
     useCurrency.mockReturnValue({
       formatCurrencyInput: mockFormatCurrencyInput,
       parseCurrency: mockParseCurrency,
+      formatAmountToDecimal: mockFormatAmountToDecimal,
       currency: "BRL",
     });
 
@@ -252,7 +259,7 @@ describe("useRecurringTransactionModal", () => {
       expect(mockResetForm).toHaveBeenCalledWith({
         title: "Monthly Rent",
         description: "Apartment rent",
-        amount: "1500",
+        amount: "1500.00",
         category: "1",
         frequency: "monthly",
         nextDueDate: "2024-01-01",

@@ -1,20 +1,26 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAuth } from './AuthContext';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "./AuthContext";
 
 const CurrencyContext = createContext();
 
 const CURRENCIES = [
-  { code: 'BRL', symbol: 'R$', name: 'Real Brasileiro', locale: 'pt-BR' },
-  { code: 'USD', symbol: '$', name: 'Dólar Americano', locale: 'en-US' },
-  { code: 'EUR', symbol: '€', name: 'Euro', locale: 'de-DE' },
-  { code: 'GBP', symbol: '£', name: 'Libra Esterlina', locale: 'en-GB' },
-  { code: 'JPY', symbol: '¥', name: 'Iene Japonês', locale: 'ja-JP' },
-  { code: 'CAD', symbol: 'C$', name: 'Dólar Canadense', locale: 'en-CA' },
-  { code: 'AUD', symbol: 'A$', name: 'Dólar Australiano', locale: 'en-AU' },
-  { code: 'CHF', symbol: 'CHF', name: 'Franco Suíço', locale: 'de-CH' },
-  { code: 'CNY', symbol: '¥', name: 'Yuan Chinês', locale: 'zh-CN' },
-  { code: 'INR', symbol: '₹', name: 'Rupia Indiana', locale: 'en-IN' },
+  { code: "BRL", symbol: "R$", name: "Real Brasileiro", locale: "pt-BR" },
+  { code: "USD", symbol: "$", name: "Dólar Americano", locale: "en-US" },
+  { code: "EUR", symbol: "€", name: "Euro", locale: "de-DE" },
+  { code: "GBP", symbol: "£", name: "Libra Esterlina", locale: "en-GB" },
+  { code: "JPY", symbol: "¥", name: "Iene Japonês", locale: "ja-JP" },
+  { code: "CAD", symbol: "C$", name: "Dólar Canadense", locale: "en-CA" },
+  { code: "AUD", symbol: "A$", name: "Dólar Australiano", locale: "en-AU" },
+  { code: "CHF", symbol: "CHF", name: "Franco Suíço", locale: "de-CH" },
+  { code: "CNY", symbol: "¥", name: "Yuan Chinês", locale: "zh-CN" },
+  { code: "INR", symbol: "₹", name: "Rupia Indiana", locale: "en-IN" },
 ];
 
 export const CurrencyProvider = ({ children }) => {
@@ -23,7 +29,7 @@ export const CurrencyProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const getCurrencyStorageKey = () => {
-    return user ? `@currency_settings_${user.uid}` : '@currency_settings';
+    return user ? `@currency_settings_${user.uid}` : "@currency_settings";
   };
 
   useEffect(() => {
@@ -39,16 +45,18 @@ export const CurrencyProvider = ({ children }) => {
     try {
       const storageKey = getCurrencyStorageKey();
       const currencyData = await AsyncStorage.getItem(storageKey);
-      
+
       if (currencyData) {
         const parsedCurrency = JSON.parse(currencyData);
-        const foundCurrency = CURRENCIES.find(c => c.code === parsedCurrency.code);
+        const foundCurrency = CURRENCIES.find(
+          (c) => c.code === parsedCurrency.code
+        );
         if (foundCurrency) {
           setCurrency(foundCurrency);
         }
       }
     } catch (error) {
-      console.error('Erro ao carregar configurações de moeda:', error);
+      console.error("Erro ao carregar configurações de moeda:", error);
     } finally {
       setLoading(false);
     }
@@ -60,7 +68,7 @@ export const CurrencyProvider = ({ children }) => {
       await AsyncStorage.setItem(storageKey, JSON.stringify(newCurrency));
       setCurrency(newCurrency);
     } catch (error) {
-      console.error('Erro ao salvar configurações de moeda:', error);
+      console.error("Erro ao salvar configurações de moeda:", error);
       throw error;
     }
   };
@@ -79,23 +87,36 @@ export const CurrencyProvider = ({ children }) => {
   };
 
   const formatCurrencyInput = (value) => {
-    if (!value) return '';
-    
-    const numericValue = value.replace(/\D/g, '');
-    if (numericValue === '') return '';
-    
-    const formattedValue = (numericValue / 100).toLocaleString(currency.locale, {
-      minimumFractionDigits: 2,
-    });
-    
+    if (!value) return "";
+
+    const numericValue = value.replace(/\D/g, "");
+    if (numericValue === "") return "";
+
+    const formattedValue = (numericValue / 100).toLocaleString(
+      currency.locale,
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
+    );
+
     return `${currency.symbol} ${formattedValue}`;
   };
 
   const parseCurrency = useCallback((formattedValue) => {
-    if (!formattedValue) return '';
-    
-    const numericValue = formattedValue.replace(/\D/g, '');
+    if (!formattedValue) return "";
+
+    const numericValue = formattedValue.replace(/\D/g, "");
     return (numericValue / 100).toFixed(2);
+  }, []);
+
+  const formatAmountToDecimal = useCallback((amount) => {
+    if (amount === null || amount === undefined || amount === "") return "";
+
+    const numericAmount = parseFloat(amount);
+    if (isNaN(numericAmount)) return "";
+
+    return numericAmount.toFixed(2);
   }, []);
 
   const value = {
@@ -106,6 +127,7 @@ export const CurrencyProvider = ({ children }) => {
     formatCurrency,
     formatCurrencyInput,
     parseCurrency,
+    formatAmountToDecimal,
   };
 
   return (
@@ -118,7 +140,7 @@ export const CurrencyProvider = ({ children }) => {
 export const useCurrency = () => {
   const context = useContext(CurrencyContext);
   if (!context) {
-    throw new Error('useCurrency deve ser usado dentro de um CurrencyProvider');
+    throw new Error("useCurrency deve ser usado dentro de um CurrencyProvider");
   }
   return context;
 };

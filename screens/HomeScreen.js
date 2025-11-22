@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -23,7 +23,7 @@ import { Loading } from "../components/Loading";
 import UnifiedTransactionModal from "../components/UnifiedTransactionModal";
 import TransactionItem from "../components/TransactionItem";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = React.memo(({ navigation }) => {
   const { user } = useAuth();
   const { theme } = useTheme();
   const { transactions, loading, addTransaction, getTotalByType, getBalance } =
@@ -38,28 +38,54 @@ const HomeScreen = ({ navigation }) => {
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
 
-  const getFirstName = (email) => {
-    if (!email) return "Usuário";
-    const name = email.split("@")[0];
+  // Memoize user name extraction
+  const firstName = useMemo(() => {
+    if (!user?.email) return "Usuário";
+    const name = user.email.split("@")[0];
     return name.charAt(0).toUpperCase() + name.slice(1);
-  };
+  }, [user?.email]);
 
-  const incomeTotal = getTotalByType("income");
-  const expenseTotal = getTotalByType("expense");
-  const balanceTotal = getBalance();
+  // Memoize financial calculations
+  const financialData = useMemo(() => {
+    const incomeTotal = getTotalByType("income");
+    const expenseTotal = getTotalByType("expense");
+    const balanceTotal = getBalance();
 
-  const handleAddPress = (type) => {
+    return {
+      incomeTotal,
+      expenseTotal,
+      balanceTotal,
+    };
+  }, [getTotalByType, getBalance]);
+
+  // Memoize recent transactions (showing only last 5)
+  const recentTransactions = useMemo(() => {
+    return transactions.slice(0, 5);
+  }, [transactions]);
+
+  const handleAddPress = useCallback((type) => {
     setModalType(type);
     setModalVisible(true);
-  };
+  }, []);
 
-  const handleSaveTransaction = async (newTransaction) => {
-    try {
-      await addTransaction(newTransaction);
-    } catch (error) {
-      console.error("Erro ao adicionar transação:", error);
-    }
-  };
+  const handleSaveTransaction = useCallback(
+    async (newTransaction) => {
+      try {
+        await addTransaction(newTransaction);
+      } catch (error) {
+        console.error("Erro ao adicionar transação:", error);
+      }
+    },
+    [addTransaction]
+  );
+
+  const handleCloseModal = useCallback(() => {
+    setModalVisible(false);
+  }, []);
+
+  const handleNavigateToTransactions = useCallback(() => {
+    navigation.navigate("Transactions");
+  }, [navigation]);
 
   if (loading) {
     return <Loading message="Carregando suas transações..." />;
@@ -77,15 +103,11 @@ const HomeScreen = ({ navigation }) => {
       >
         <View style={styles.headerContent}>
           <View>
-            <Text style={styles.welcomeText}>
-              Olá, {getFirstName(user?.email)}!
-            </Text>
+            <Text style={styles.welcomeText}>Olá, {firstName}!</Text>
             <Text style={styles.subtitle}>Como estão suas finanças hoje?</Text>
           </View>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {getFirstName(user?.email).charAt(0)}
-            </Text>
+            <Text style={styles.avatarText}>{firstName.charAt(0)}</Text>
           </View>
         </View>
       </LinearGradient>
@@ -110,7 +132,7 @@ const HomeScreen = ({ navigation }) => {
                 Saldo Total
               </Text>
               <Text style={[styles.balance, { color: theme.colors.text }]}>
-                {formatCurrency(balanceTotal)}
+                {formatCurrency(financialData.balanceTotal)}
               </Text>
             </Card>
           </Animated.View>
@@ -150,7 +172,7 @@ const HomeScreen = ({ navigation }) => {
               <Text
                 style={[styles.summaryAmount, { color: theme.colors.success }]}
               >
-                {formatCurrency(incomeTotal)}
+                {formatCurrency(financialData.incomeTotal)}
               </Text>
             </Card>
 
@@ -166,7 +188,7 @@ const HomeScreen = ({ navigation }) => {
               <Text
                 style={[styles.summaryAmount, { color: theme.colors.error }]}
               >
-                {formatCurrency(expenseTotal)}
+                {formatCurrency(financialData.expenseTotal)}
               </Text>
             </Card>
           </Animated.View>
@@ -179,9 +201,7 @@ const HomeScreen = ({ navigation }) => {
                 >
                   Transações Recentes
                 </Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("Transactions")}
-                >
+                <TouchableOpacity onPress={handleNavigateToTransactions}>
                   <Text
                     style={[styles.seeAllText, { color: theme.colors.primary }]}
                   >
@@ -191,7 +211,7 @@ const HomeScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.transactionsList}>
-                {transactions.length === 0 ? (
+                {recentTransactions.length === 0 ? (
                   <Text
                     style={{
                       color: theme.colors.textSecondary,
@@ -201,7 +221,7 @@ const HomeScreen = ({ navigation }) => {
                     Nenhuma transação ainda
                   </Text>
                 ) : (
-                  transactions.map((t, idx) => (
+                  recentTransactions.map((t, idx) => (
                     <TransactionItem
                       key={t.id ? `${t.id}-${idx}` : `transaction-${idx}`}
                       transaction={t}
@@ -217,7 +237,7 @@ const HomeScreen = ({ navigation }) => {
 
           <UnifiedTransactionModal
             visible={modalVisible}
-            onClose={() => setModalVisible(false)}
+            onClose={handleCloseModal}
             onSave={handleSaveTransaction}
             type={modalType}
           />
@@ -225,7 +245,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

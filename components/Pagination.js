@@ -5,7 +5,7 @@ import { useTheme } from "../contexts/ThemeContext";
 /**
  * Pagination component for navigating through pages
  */
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = React.memo(({ currentPage, totalPages, onPageChange }) => {
   const { theme } = useTheme();
 
   if (totalPages <= 1) {
@@ -75,7 +75,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   paginationContainer: {
