@@ -4,7 +4,7 @@ import { Text } from "react-native";
 import { Card } from "../../src/presentation/components";
 
 // Mock the useTheme hook with consistent values
-jest.mock("../../contexts/ThemeContext", () => ({
+jest.mock("../../src/domain/contexts/ThemeContext", () => ({
   useTheme: () => ({
     theme: {
       colors: {

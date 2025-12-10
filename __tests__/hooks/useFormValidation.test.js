@@ -9,7 +9,7 @@ jest.mock("react-hook-form", () => ({
 }));
 
 // Mock input sanitizer
-jest.mock("../../utils/inputSanitizer", () => ({
+jest.mock("../../src/domain/utils/inputSanitizer", () => ({
   sanitizeFormData: jest.fn((data) => data),
   sanitizeInput: jest.fn((value) => value),
 }));

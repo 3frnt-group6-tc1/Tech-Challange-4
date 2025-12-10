@@ -5,8 +5,8 @@ import { useAuth } from "../../src/domain/contexts/AuthContext";
 import { useFormValidation } from "../../src/presentation/hooks/useFormValidation";
 
 // Mock dependencies
-jest.mock("../../contexts/AuthContext");
-jest.mock("../../hooks/useFormValidation");
+jest.mock("../../src/domain/contexts/AuthContext");
+jest.mock("../../src/presentation/hooks/useFormValidation");
 jest.mock("react-native/Libraries/Alert/Alert", () => ({
   alert: jest.fn(),
 }));

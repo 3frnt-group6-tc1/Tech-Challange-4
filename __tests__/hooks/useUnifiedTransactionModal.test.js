@@ -6,12 +6,12 @@ import { useTransactions } from "../../src/domain/contexts/TransactionsContext";
 import { useCurrency } from "../../src/domain/contexts/CurrencyContext";
 
 // Mock the contexts
-jest.mock("../../contexts/TransactionsContext");
-jest.mock("../../contexts/CurrencyContext");
-jest.mock("../../services/uploadService");
+jest.mock("../../src/domain/contexts/TransactionsContext");
+jest.mock("../../src/domain/contexts/CurrencyContext");
+jest.mock("../../src/infrastructure/services/uploadService");
 
 // Mock useFormValidation hook
-jest.mock("../../hooks/useFormValidation", () => ({
+jest.mock("../../src/presentation/hooks/useFormValidation", () => ({
   useFormValidation: jest.fn(() => ({
     control: {},
     handleSubmit: jest.fn(),
@@ -21,7 +21,7 @@ jest.mock("../../hooks/useFormValidation", () => ({
 }));
 
 // Mock validation rules
-jest.mock("../../utils/fieldRules", () => ({
+jest.mock("../../src/domain/utils/fieldRules", () => ({
   fieldValidators: {
     title: jest.fn(() => ({ required: "Title is required" })),
     description: jest.fn(() => ({ required: "Description is required" })),
@@ -31,7 +31,7 @@ jest.mock("../../utils/fieldRules", () => ({
   },
 }));
 
-jest.mock("../../utils/formFieldRules", () => ({
+jest.mock("../../src/domain/utils/formFieldRules", () => ({
   formValidationSets: {
     transaction: jest.fn(() => ({
       title: { required: "Title is required" },

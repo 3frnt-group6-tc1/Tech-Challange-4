@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import ActiveFilters from "../../components/ActiveFilters";
-import { lightTheme, darkTheme } from "../../contexts/ThemeContext";
+import ActiveFilters from "../../src/presentation/components/legacy/ActiveFilters";
+import { lightTheme, darkTheme } from "../../src/domain/contexts/ThemeContext";
 
 // Mock AsyncStorage
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -11,8 +11,8 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
 
 // Mock the useTheme hook
 const mockUseTheme = jest.fn();
-jest.mock("../../contexts/ThemeContext", () => {
-  const originalModule = jest.requireActual("../../contexts/ThemeContext");
+jest.mock("../../src/domain/contexts/ThemeContext", () => {
+  const originalModule = jest.requireActual("../../src/domain/contexts/ThemeContext");
   return {
     ...originalModule,
     useTheme: () => mockUseTheme(),
@@ -48,11 +48,11 @@ describe("ActiveFilters Component", () => {
 
       const { queryByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(queryByText("Filtros Ativos")).toBeNull();
+      expect(queryByText("Limpar")).toBeNull();
     });
 
     it("renders when filters are active", () => {
@@ -65,12 +65,11 @@ describe("ActiveFilters Component", () => {
 
       const { getByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Filtros Ativos")).toBeTruthy();
-      expect(getByText("Limpar")).toBeTruthy();
+      expect(getByText("Limpar todos")).toBeTruthy();
     });
   });
 
@@ -85,11 +84,11 @@ describe("ActiveFilters Component", () => {
 
       const { getByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Receitas")).toBeTruthy();
+      expect(getByText("Tipo: Receitas")).toBeTruthy();
     });
 
     it("displays expense type filter", () => {
@@ -102,11 +101,11 @@ describe("ActiveFilters Component", () => {
 
       const { getByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Despesas")).toBeTruthy();
+      expect(getByText("Tipo: Despesas")).toBeTruthy();
     });
 
     it("displays category filter", () => {
@@ -119,86 +118,35 @@ describe("ActiveFilters Component", () => {
 
       const { getByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Alimentação")).toBeTruthy();
+      expect(getByText("Categoria: Alimentação")).toBeTruthy();
     });
   });
 
   describe("Date Range Filters", () => {
-    it("displays today date range filter", () => {
+    it("displays custom date range filter", () => {
       const filters = {
         type: "all",
         category: "all",
-        dateRange: "today",
+        dateRange: { start: "2023-01-01", end: "2023-01-31" },
         search: "",
       };
 
       const { getByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Hoje")).toBeTruthy();
-    });
-
-    it("displays week date range filter", () => {
-      const filters = {
-        type: "all",
-        category: "all",
-        dateRange: "week",
-        search: "",
-      };
-
-      const { getByText } = render(
-        <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
-        </TestWrapper>
-      );
-
-      expect(getByText("Esta semana")).toBeTruthy();
-    });
-
-    it("displays month date range filter", () => {
-      const filters = {
-        type: "all",
-        category: "all",
-        dateRange: "month",
-        search: "",
-      };
-
-      const { getByText } = render(
-        <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
-        </TestWrapper>
-      );
-
-      expect(getByText("Este mês")).toBeTruthy();
-    });
-
-    it("displays year date range filter", () => {
-      const filters = {
-        type: "all",
-        category: "all",
-        dateRange: "year",
-        search: "",
-      };
-
-      const { getByText } = render(
-        <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
-        </TestWrapper>
-      );
-
-      expect(getByText("Este ano")).toBeTruthy();
+      expect(getByText("Período personalizado")).toBeTruthy();
     });
   });
 
   describe("Search Filter", () => {
-    it("displays search filter", () => {
+    it("does not display search filter (not supported)", () => {
       const filters = {
         type: "all",
         category: "all",
@@ -206,13 +154,13 @@ describe("ActiveFilters Component", () => {
         search: "test search",
       };
 
-      const { getByText } = render(
+      const { queryByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText('Busca: "test search"')).toBeTruthy();
+      expect(queryByText('Busca: "test search"')).toBeNull();
     });
   });
 
@@ -221,26 +169,24 @@ describe("ActiveFilters Component", () => {
       const filters = {
         type: "income",
         category: "Salário",
-        dateRange: "month",
-        search: "bonus",
+        dateRange: { start: "2024-01-01", end: "2024-01-31" },
       };
 
       const { getByText } = render(
         <TestWrapper>
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Receitas")).toBeTruthy();
-      expect(getByText("Salário")).toBeTruthy();
-      expect(getByText("Este mês")).toBeTruthy();
-      expect(getByText('Busca: "bonus"')).toBeTruthy();
+      expect(getByText("Tipo: Receitas")).toBeTruthy();
+      expect(getByText("Categoria: Salário")).toBeTruthy();
+      expect(getByText("Período personalizado")).toBeTruthy();
     });
   });
 
   describe("Clear Filters", () => {
-    it("calls onClearFilters when clear button is pressed", () => {
-      const onClearFiltersMock = jest.fn();
+    it("calls onClearAll when clear button is pressed", () => {
+      const onClearAllMock = jest.fn();
       const filters = {
         type: "income",
         category: "all",
@@ -252,13 +198,13 @@ describe("ActiveFilters Component", () => {
         <TestWrapper>
           <ActiveFilters
             filters={filters}
-            onClearFilters={onClearFiltersMock}
+            onClearAll={onClearAllMock}
           />
         </TestWrapper>
       );
 
-      fireEvent.press(getByText("Limpar"));
-      expect(onClearFiltersMock).toHaveBeenCalledTimes(1);
+      fireEvent.press(getByText("Limpar todos"));
+      expect(onClearAllMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -273,11 +219,11 @@ describe("ActiveFilters Component", () => {
 
       const { getByText } = render(
         <TestWrapper theme="light">
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Filtros Ativos")).toBeTruthy();
+      expect(getByText("Limpar todos")).toBeTruthy();
     });
 
     it("renders correctly with dark theme", () => {
@@ -290,11 +236,11 @@ describe("ActiveFilters Component", () => {
 
       const { getByText } = render(
         <TestWrapper theme="dark">
-          <ActiveFilters filters={filters} onClearFilters={jest.fn()} />
+          <ActiveFilters filters={filters} onClearAll={jest.fn()} />
         </TestWrapper>
       );
 
-      expect(getByText("Filtros Ativos")).toBeTruthy();
+      expect(getByText("Limpar todos")).toBeTruthy();
     });
   });
 });

@@ -36,7 +36,7 @@ const mockTransactions = [
   },
 ];
 
-jest.mock("../../contexts/TransactionsContext", () => ({
+jest.mock("../../src/domain/contexts/TransactionsContext", () => ({
   useTransactions: () => ({
     transactions: mockTransactions,
     updateTransaction: mockUpdateTransaction,

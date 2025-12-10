@@ -21,7 +21,7 @@ const mockTheme = {
   },
 };
 
-jest.mock("../../contexts/ThemeContext", () => ({
+jest.mock("../../src/domain/contexts/ThemeContext", () => ({
   useTheme: () => ({ theme: mockTheme }),
 }));
 
