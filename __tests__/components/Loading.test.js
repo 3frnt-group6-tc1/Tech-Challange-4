@@ -1,6 +1,6 @@
-import React from "react";
-import { render } from "@testing-library/react-native";
-import { Loading } from "../../components/Loading";
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import { Loading } from "../../src/presentation/components";
 import { lightTheme, darkTheme } from "../../contexts/ThemeContext";
 
 // Mock AsyncStorage

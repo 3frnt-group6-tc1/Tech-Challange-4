@@ -1,8 +1,8 @@
 import { renderHook, act, waitFor } from "@testing-library/react-native";
 import { Alert } from "react-native";
-import { useRegister } from "../../hooks/useRegister";
-import { useAuth } from "../../contexts/AuthContext";
-import { useFormValidation } from "../../hooks/useFormValidation";
+import { useRegister } from "../../src/presentation/hooks/useRegister";
+import { useAuth } from "../../src/domain/contexts/AuthContext";
+import { useFormValidation } from "../../src/presentation/hooks/useFormValidation";
 
 // Mock dependencies
 jest.mock("../../contexts/AuthContext");

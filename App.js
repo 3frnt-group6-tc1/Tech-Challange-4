@@ -4,28 +4,28 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Text, StatusBar } from "react-native";
 
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
-import { TransactionsProvider } from "./contexts/TransactionsContext";
-import { CurrencyProvider } from "./contexts/CurrencyContext";
+import { AuthProvider, useAuth } from "./src/domain/contexts/AuthContext";
+import { ThemeProvider, useTheme } from "./src/domain/contexts/ThemeContext";
+import { TransactionsProvider } from "./src/domain/contexts/TransactionsContext";
+import { CurrencyProvider } from "./src/domain/contexts/CurrencyContext";
 import { cacheService } from "./src/infrastructure/services";
-import LoadingScreen from "./components/LoadingScreen";
+import LoadingScreen from "./src/presentation/components/legacy/LoadingScreen";
 
 // Lazy load screens for better performance
-const LoginScreen = lazy(() => import("./screens/LoginScreen"));
-const RegisterScreen = lazy(() => import("./screens/RegisterScreen"));
-const HomeScreen = lazy(() => import("./screens/HomeScreen"));
-const DashboardScreen = lazy(() => import("./screens/DashboardScreen"));
-const ProfileScreen = lazy(() => import("./screens/ProfileScreen"));
-const SettingsScreen = lazy(() => import("./screens/SettingsScreen"));
-const TransactionsScreen = lazy(() => import("./screens/TransactionsScreen"));
-const CategoriesScreen = lazy(() => import("./screens/CategoriesScreen"));
+const LoginScreen = lazy(() => import("./src/presentation/screens/LoginScreen"));
+const RegisterScreen = lazy(() => import("./src/presentation/screens/RegisterScreen"));
+const HomeScreen = lazy(() => import("./src/presentation/screens/HomeScreen"));
+const DashboardScreen = lazy(() => import("./src/presentation/screens/DashboardScreen"));
+const ProfileScreen = lazy(() => import("./src/presentation/screens/ProfileScreen"));
+const SettingsScreen = lazy(() => import("./src/presentation/screens/SettingsScreen"));
+const TransactionsScreen = lazy(() => import("./src/presentation/screens/TransactionsScreen"));
+const CategoriesScreen = lazy(() => import("./src/presentation/screens/CategoriesScreen"));
 const RecurringTransactionsScreen = lazy(() =>
-  import("./screens/RecurringTransactionsScreen")
+  import("./src/presentation/screens/RecurringTransactionsScreen")
 );
-const ExportReportScreen = lazy(() => import("./screens/ExportReportScreen"));
+const ExportReportScreen = lazy(() => import("./src/presentation/screens/ExportReportScreen"));
 const CurrencySettingsScreen = lazy(() =>
-  import("./screens/CurrencySettingsScreen")
+  import("./src/presentation/screens/CurrencySettingsScreen")
 );
 
 const Stack = createStackNavigator();

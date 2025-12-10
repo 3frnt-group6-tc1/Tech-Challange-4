@@ -1,7 +1,7 @@
 import React from "react";
 import { render, act } from "@testing-library/react-native";
 import { Text, View } from "react-native";
-import { useTransactionsScreen } from "../../hooks/useTransactionsScreen";
+import { useTransactionsScreen } from "../../src/presentation/hooks/useTransactionsScreen";
 
 // Mock the TransactionsContext
 const mockUpdateTransaction = jest.fn();

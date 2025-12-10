@@ -1,7 +1,7 @@
 import React from "react";
 import { render, act } from "@testing-library/react-native";
 import { Text, View } from "react-native";
-import { useImagePreview } from "../../hooks/useImagePreview";
+import { useImagePreview } from "../../src/presentation/hooks/useImagePreview";
 
 describe("useImagePreview", () => {
   // Test component to use the hook

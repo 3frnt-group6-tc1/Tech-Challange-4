@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 import { Text, View, StyleSheet } from "react-native";
-import { Card } from "../../components/Card";
+import { Card } from "../../src/presentation/components";
 
 // Mock the useTheme hook
 const mockTheme = {

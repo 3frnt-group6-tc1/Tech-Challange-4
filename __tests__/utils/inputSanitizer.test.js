@@ -8,7 +8,7 @@ import {
   isSafeValue,
   sanitizeFormData,
   createSanitizationValidator,
-} from "../../utils/inputSanitizer";
+} from "../../src/domain/utils/inputSanitizer";
 
 describe("Input Sanitizer", () => {
   describe("sanitizeInput", () => {

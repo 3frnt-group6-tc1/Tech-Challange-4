@@ -1,8 +1,8 @@
 import { renderHook, act, waitFor } from "@testing-library/react-native";
 import { Alert } from "react-native";
-import { useCategoryModal } from "../../hooks/useCategoryModal";
-import { useTransactions } from "../../contexts/TransactionsContext";
-import { useFormValidation } from "../../hooks/useFormValidation";
+import { useCategoryModal } from "../../src/presentation/hooks/useCategoryModal";
+import { useTransactions } from "../../src/domain/contexts/TransactionsContext";
+import { useFormValidation } from "../../src/presentation/hooks/useFormValidation";
 
 // Mock dependencies
 jest.mock("../../contexts/TransactionsContext");

@@ -23,10 +23,10 @@ jest.mock("../../utils/formFieldRules", () => ({
   },
 }));
 
-import { useRecurringTransactionModal } from "../../hooks/useRecurringTransactionModal";
-import { useTransactions } from "../../contexts/TransactionsContext";
-import { useCurrency } from "../../contexts/CurrencyContext";
-import { useFormValidation } from "../../hooks/useFormValidation";
+import { useRecurringTransactionModal } from "../../src/presentation/hooks/useRecurringTransactionModal";
+import { useTransactions } from "../../src/domain/contexts/TransactionsContext";
+import { useCurrency } from "../../src/domain/contexts/CurrencyContext";
+import { useFormValidation } from "../../src/presentation/hooks/useFormValidation";
 import { Alert } from "react-native";
 
 describe("useRecurringTransactionModal", () => {

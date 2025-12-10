@@ -1,9 +1,9 @@
 import { renderHook, act, waitFor } from "@testing-library/react-native";
 import { Alert } from "react-native";
-import { useLogin } from "../../hooks/useLogin";
-import { useAuth } from "../../contexts/AuthContext";
-import { useFormValidation } from "../../hooks/useFormValidation";
-import { formValidationSets } from "../../utils/formFieldRules";
+import { useLogin } from "../../src/presentation/hooks/useLogin";
+import { useAuth } from "../../src/domain/contexts/AuthContext";
+import { useFormValidation } from "../../src/presentation/hooks/useFormValidation";
+import { formValidationSets } from "../../src/domain/utils/formFieldRules";
 
 // Mock dependencies
 jest.mock("../../contexts/AuthContext");

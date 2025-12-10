@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import { Input } from "../../components/Input";
+import { Input } from "../../src/presentation/components";
 import { lightTheme, darkTheme } from "../../contexts/ThemeContext";
 
 // Mock AsyncStorage

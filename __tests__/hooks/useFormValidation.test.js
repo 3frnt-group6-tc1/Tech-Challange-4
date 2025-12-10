@@ -1,7 +1,7 @@
 import React from "react";
 import { render, act } from "@testing-library/react-native";
 import { Text, View } from "react-native";
-import { useFormValidation } from "../../hooks/useFormValidation";
+import { useFormValidation } from "../../src/presentation/hooks/useFormValidation";
 
 // Mock react-hook-form
 jest.mock("react-hook-form", () => ({

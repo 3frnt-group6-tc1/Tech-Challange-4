@@ -3,7 +3,7 @@
  * Tests complete form validation schemas that combine field validators
  */
 
-import { formValidationSets } from "../../utils/formFieldRules";
+import { formValidationSets } from "../../src/domain/utils/formFieldRules";
 
 describe("Form Validation Sets", () => {
   describe("login", () => {

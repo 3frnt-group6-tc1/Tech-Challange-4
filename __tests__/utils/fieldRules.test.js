@@ -3,7 +3,7 @@
  * Tests field validators that provide reusable validation strategies
  */
 
-import { fieldValidators } from "../../utils/fieldRules";
+import { fieldValidators } from "../../src/domain/utils/fieldRules";
 
 describe("Field Validators", () => {
   describe("required", () => {

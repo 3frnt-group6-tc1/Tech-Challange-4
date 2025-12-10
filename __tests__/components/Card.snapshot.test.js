@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react-native";
 import { Text } from "react-native";
-import { Card } from "../../components/Card";
+import { Card } from "../../src/presentation/components";
 
 // Mock the useTheme hook with consistent values
 jest.mock("../../contexts/ThemeContext", () => ({

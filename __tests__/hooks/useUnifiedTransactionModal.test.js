@@ -1,9 +1,9 @@
 import React from "react";
 import { render, act } from "@testing-library/react-native";
 import { Text, View } from "react-native";
-import { useUnifiedTransactionModal } from "../../hooks/useUnifiedTransactionModal";
-import { useTransactions } from "../../contexts/TransactionsContext";
-import { useCurrency } from "../../contexts/CurrencyContext";
+import { useUnifiedTransactionModal } from "../../src/presentation/hooks/useUnifiedTransactionModal";
+import { useTransactions } from "../../src/domain/contexts/TransactionsContext";
+import { useCurrency } from "../../src/domain/contexts/CurrencyContext";
 
 // Mock the contexts
 jest.mock("../../contexts/TransactionsContext");
