@@ -34,11 +34,13 @@ const ProfileScreen = () => {
         {
           text: 'Sair',
           style: 'destructive',
-          onPress: async () => {
-            const result = await logout();
-            if (!result.success) {
-              Alert.alert('Erro', 'Não foi possível sair da conta');
-            }
+          onPress: () => {
+            void (async () => {
+              const result = await logout();
+              if (!result.success) {
+                Alert.alert('Erro', 'Não foi possível sair da conta');
+              }
+            })();
           },
         },
       ],

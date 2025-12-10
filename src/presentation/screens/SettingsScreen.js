@@ -91,12 +91,14 @@ const SettingsScreen = ({ navigation }) => {
               },
               {
                 text: 'Salvar',
-                onPress: async (password) => {
-                  if (!password || password.trim() === '') {
-                    Alert.alert('Erro', 'Senha não pode estar vazia');
-                    return;
-                  }
-                  await saveBiometricCredentials(password);
+                onPress: (password) => {
+                  void (async () => {
+                    if (!password || password.trim() === '') {
+                      Alert.alert('Erro', 'Senha não pode estar vazia');
+                      return;
+                    }
+                    await saveBiometricCredentials(password);
+                  })();
                 },
               },
             ],
@@ -164,18 +166,20 @@ const SettingsScreen = ({ navigation }) => {
           {
             text: 'Limpar',
             style: 'destructive',
-            onPress: async () => {
-              try {
-                await cacheService.clear();
-                const statsAfter = cacheService.getStats();
-                Alert.alert(
-                  'Sucesso', 
-                  `Cache limpo com sucesso!\n\nStatus após limpeza:\n• ${statsAfter.total} itens em cache`
-                );
-              } catch (error) {
-                console.error('Erro ao limpar cache:', error);
-                Alert.alert('Erro', 'Não foi possível limpar o cache');
-              }
+            onPress: () => {
+              void (async () => {
+                try {
+                  await cacheService.clear();
+                  const statsAfter = cacheService.getStats();
+                  Alert.alert(
+                    'Sucesso', 
+                    `Cache limpo com sucesso!\n\nStatus após limpeza:\n• ${statsAfter.total} itens em cache`
+                  );
+                } catch (error) {
+                  console.error('Erro ao limpar cache:', error);
+                  Alert.alert('Erro', 'Não foi possível limpar o cache');
+                }
+              })();
             },
           },
         ],
@@ -257,22 +261,23 @@ const SettingsScreen = ({ navigation }) => {
         {
           text: 'Sair',
           style: 'destructive',
-          onPress: async () => {
-            try {
-              // Remover credenciais biométricas ao fazer logout
-              if (user) {
-                await BiometricService.removeCredentials(user.uid);
-                await AsyncStorage.removeItem(`biometric_enabled_${user.uid}`);
-                await AsyncStorage.removeItem('last_user_id');
-              }
-              
-              const result = await logout();
-              if (!result.success) {
-                Alert.alert('Erro', 'Não foi possível sair da conta');
-              }
-            } catch (error) {
-              console.error('Erro ao fazer logout:', error);
-              Alert.alert('Erro', 'Ocorreu um erro ao sair da conta');
+          onPress: () => {
+            void (async () => {
+              try {
+                // Remover credenciais biométricas ao fazer logout
+                if (user) {
+                  await BiometricService.removeCredentials(user.uid);
+                  await AsyncStorage.removeItem(`biometric_enabled_${user.uid}`);
+                  await AsyncStorage.removeItem('last_user_id');
+                }
+                
+                const result = await logout();
+                if (!result.success) {
+                  Alert.alert('Erro', 'Não foi possível sair da conta');
+                }
+              } catch (error) {
+                console.error('Erro ao fazer logout:', error);
+                Alert.alert('Erro', 'Ocorreu um erro ao sair da conta');
             }
           },
         },

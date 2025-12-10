@@ -130,13 +130,15 @@ export const useCategoryModal = ({
           {
             text: "Excluir",
             style: "destructive",
-            onPress: async () => {
-              try {
-                await removeCategory(type, name);
-                Alert.alert("Sucesso", "Categoria excluída com sucesso!");
-              } catch (error) {
-                Alert.alert("Erro", error.message);
-              }
+            onPress: () => {
+              void (async () => {
+                try {
+                  await removeCategory(type, name);
+                  Alert.alert("Sucesso", "Categoria excluída com sucesso!");
+                } catch (error) {
+                  Alert.alert("Erro", error.message);
+                }
+              })();
             },
           },
         ]
