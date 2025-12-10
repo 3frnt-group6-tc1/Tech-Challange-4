@@ -10,7 +10,7 @@ export const VALIDATION_TYPES = {
 };
 
 export const VALIDATION_PATTERNS = {
-  EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  EMAIL: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
   PHONE: /^[\d\s\-\(\)]+$/,
   CURRENCY: /^\d+([.,]\d{1,2})?$/,
   ALPHANUMERIC: /^[a-zA-Z0-9\s]+$/,

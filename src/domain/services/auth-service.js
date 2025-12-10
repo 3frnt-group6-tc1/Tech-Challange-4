@@ -159,11 +159,12 @@ export class AuthService {
   }
 
   _formatError(error) {
+    // NOSONAR - These are Firebase error codes, not hardcoded passwords
     const errorMessages = {
       "auth/user-not-found": "Usuário não encontrado",
-      "auth/wrong-password": "Senha incorreta",
+      "auth/wrong-password": "Senha incorreta", // NOSONAR
       "auth/email-already-in-use": "Email já está em uso",
-      "auth/weak-password": "Senha muito fraca. Use no mínimo 6 caracteres",
+      "auth/weak-password": "Senha muito fraca. Use no mínimo 6 caracteres", // NOSONAR
       "auth/invalid-email": "Email inválido",
       "auth/user-disabled": "Usuário desabilitado",
       "auth/too-many-requests": "Muitas tentativas. Tente novamente mais tarde",

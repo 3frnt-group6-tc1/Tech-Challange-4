@@ -8,7 +8,7 @@ export const fieldValidators = {
   email: (message = "Email inválido") => ({
     required: "Email é obrigatório",
     pattern: {
-      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message,
     },
   }),

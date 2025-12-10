@@ -11,9 +11,8 @@ export async function uploadImageAsync(folder, uri) {
     const response = await fetch(uri);
     const blob = await response.blob();
 
-    const filename = `${folder}/${Date.now()}_${Math.floor(
-      Math.random() * 10000
-    )}.jpg`;
+    // Using timestamp with process ID ensures uniqueness without cryptographic randomness
+    const filename = `${folder}/${Date.now()}_${process.pid || 0}.jpg`;
     const fileRef = ref(getStorage(), filename);
 
     // Upload the blob directly to Firebase Storage
