@@ -5,6 +5,7 @@ import { useTheme } from "../../../domain/contexts/ThemeContext";
 import { useCurrency } from "../../../domain/contexts/CurrencyContext";
 import { useImagePreview } from "../../hooks/useImagePreview";
 import { formatService } from "../../../domain/services/format-service";
+import { transactionTypeUtils } from "../../../domain/utils/transactionTypeUtils";
 
 /**
  * Transaction item component for displaying individual transaction details
@@ -33,18 +34,6 @@ const TransactionItem = React.memo(
       closeImagePreview,
     } = useImagePreview();
 
-    const getTypeLabel = (type) => {
-      return type === "income" ? "Receita" : "Despesa";
-    };
-
-    const getTypeColor = (type) => {
-      return type === "income" ? theme.colors.success : theme.colors.error;
-    };
-
-    const getTypeIcon = (type) => {
-      return type === "income" ? "↗" : "↙";
-    };
-
     return (
       <>
         <View
@@ -54,13 +43,13 @@ const TransactionItem = React.memo(
             <View
               style={[
                 styles.iconContainer,
-                { backgroundColor: getTypeColor(transaction.type) + "20" },
+                { backgroundColor: transactionTypeUtils.getTypeColor(transaction.type, theme) + "20" },
               ]}
             >
               <Text
-                style={[styles.icon, { color: getTypeColor(transaction.type) }]}
+                style={[styles.icon, { color: transactionTypeUtils.getTypeColor(transaction.type, theme) }]}
               >
-                {getTypeIcon(transaction.type)}
+                {transactionTypeUtils.getTypeIcon(transaction.type)}
               </Text>
             </View>
             <View style={styles.info}>
@@ -86,13 +75,13 @@ const TransactionItem = React.memo(
           </View>
           <View style={styles.amountContainer}>
             <Text
-              style={[styles.amount, { color: getTypeColor(transaction.type) }]}
+              style={[styles.amount, { color: transactionTypeUtils.getTypeColor(transaction.type, theme) }]}
             >
               {transaction.type === "income" ? "+ " : "- "}
               {formatCurrency(transaction.amount)}
             </Text>
             <Text style={[styles.type, { color: theme.colors.textSecondary }]}>
-              {getTypeLabel(transaction.type)}
+              {transactionTypeUtils.getTypeLabel(transaction.type)}
             </Text>
           </View>
         </View>

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAuth } from "../../domain/contexts/AuthContext";
+import { useTheme } from "../../domain/contexts/ThemeContext";
 import { Button, Card } from "../components";
 import TextField from "../components/legacy/form/TextField";
 import { useRegister } from "../hooks/useRegister";

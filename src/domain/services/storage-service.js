@@ -14,6 +14,27 @@ export class IStorageService {
   async clear() {
     throw new Error("Method not implemented");
   }
+
+  // Shared JSON methods to reduce duplication
+  async getJSON(key) {
+    try {
+      const value = await this.getItem(key);
+      return value ? JSON.parse(value) : null;
+    } catch (error) {
+      console.error(`Error parsing JSON for key ${key}:`, error);
+      return null;
+    }
+  }
+
+  async setJSON(key, value) {
+    try {
+      const stringified = JSON.stringify(value);
+      return await this.setItem(key, stringified);
+    } catch (error) {
+      console.error(`Error stringifying JSON for key ${key}:`, error);
+      return false;
+    }
+  }
 }
 
 class SecureStorageService extends IStorageService {
@@ -56,26 +77,7 @@ class SecureStorageService extends IStorageService {
     console.warn("SecureStore does not support clear all operation");
     return false;
   }
-
-  async getJSON(key) {
-    try {
-      const value = await this.getItem(key);
-      return value ? JSON.parse(value) : null;
-    } catch (error) {
-      console.error(`Error parsing JSON for key ${key}:`, error);
-      return null;
-    }
-  }
-
-  async setJSON(key, value) {
-    try {
-      const stringified = JSON.stringify(value);
-      return await this.setItem(key, stringified);
-    } catch (error) {
-      console.error(`Error stringifying JSON for key ${key}:`, error);
-      return false;
-    }
-  }
+  // getJSON and setJSON inherited from base class
 }
 
 class LocalStorageService extends IStorageService {
@@ -123,20 +125,8 @@ class LocalStorageService extends IStorageService {
       return false;
     }
   }
-
-  async getJSON(key) {
-    try {
-      const value = await this.getItem(key);
-      return value ? JSON.parse(value) : null;
-    } catch (error) {
-      console.error(`Error parsing JSON for key ${key}:`, error);
-      return null;
-    }
-  }
-
-  async setJSON(key, value) {
-    try {
-      const stringified = JSON.stringify(value);
+  // getJSON and setJSON inherited from base class
+}
       return await this.setItem(key, stringified);
     } catch (error) {
       console.error(`Error stringifying JSON for key ${key}:`, error);
