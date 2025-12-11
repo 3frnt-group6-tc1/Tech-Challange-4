@@ -10,6 +10,7 @@ import { useTheme } from "../../domain/contexts/ThemeContext";
 import { useTransactions } from "../../domain/contexts/TransactionsContext";
 import { Card } from "../components";
 import { ScreenHeader } from "../components/molecules/ScreenHeader";
+import { SectionHeader } from "../components/molecules/SectionHeader";
 import CategoryModal from "../components/legacy/CategoryModal";
 import CategoryItem from "../components/legacy/CategoryItem";
 import { useCategoryModal } from "../hooks/useCategoryModal";
@@ -59,20 +60,13 @@ const CategoriesScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         <Card style={styles.sectionCard}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              📈 Categorias de Receitas
-            </Text>
-            <TouchableOpacity
-              style={[
-                styles.addButton,
-                { backgroundColor: theme.colors.success },
-              ]}
-              onPress={() => handleAddCategory("income")}
-            >
-              <Text style={styles.addButtonText}>+</Text>
-            </TouchableOpacity>
-          </View>
+          <SectionHeader
+            title="Categorias de Receitas"
+            icon="📈"
+            onAdd={() => handleAddCategory("income")}
+            addButtonColor={theme.colors.success}
+            theme={theme}
+          />
 
           {categories.income.map((category, index) => (
             <CategoryItem
@@ -86,18 +80,21 @@ const CategoriesScreen = ({ navigation }) => {
         </Card>
 
         <Card style={styles.sectionCard}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              📉 Categorias de Despesas
-            </Text>
-            <TouchableOpacity
-              style={[
-                styles.addButton,
-                { backgroundColor: theme.colors.error },
-              ]}
-              onPress={() => handleAddCategory("expense")}
-            >
-              <Text style={styles.addButtonText}>+</Text>
+          <SectionHeader
+            title="Categorias de Despesas"
+            icon="📉"
+            onAdd={() => handleAddCategory("expense")}
+            addButtonColor={theme.colors.error}
+            theme={theme}
+          />
+          {categories.expense.map((category, index) => (
+            <CategoryItem
+              key={`expense-${index}`}
+              category={category}
+              type="expense"
+              onEdit={handleEditCategory}
+              onDelete={handleDelete}
+            />
             </TouchableOpacity>
           </View>
 
@@ -164,28 +161,6 @@ const styles = StyleSheet.create({
   },
   sectionCard: {
     marginBottom: 24,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  addButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
   },
 });
 

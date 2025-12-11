@@ -15,6 +15,7 @@ import { Card, Button } from "../components";
 import RecurringTransactionModal from "../components/legacy/RecurringTransactionModal";
 import { formatService } from "../../domain/services/format-service";
 import { useCurrency } from "../../domain/contexts/CurrencyContext";
+import { frequencyUtils } from "../utils/frequencyUtils";
 
 const RecurringTransactionsScreen = ({ navigation }) => {
   const { theme } = useTheme();
@@ -57,26 +58,6 @@ const RecurringTransactionsScreen = ({ navigation }) => {
       Alert.alert("Sucesso", "Transação recorrente adicionada!");
     }
     setModalVisible(false);
-  };
-
-  const getFrequencyLabel = (frequency) => {
-    const labels = {
-      daily: "Diário",
-      weekly: "Semanal",
-      monthly: "Mensal",
-      yearly: "Anual",
-    };
-    return labels[frequency] || frequency;
-  };
-
-  const getFrequencyIcon = (frequency) => {
-    const icons = {
-      daily: "🔄",
-      weekly: "📅",
-      monthly: "📆",
-      yearly: "🗓️",
-    };
-    return icons[frequency] || "📅";
   };
 
   const RecurringTransactionItem = ({ transaction }) => (
@@ -131,8 +112,8 @@ const RecurringTransactionsScreen = ({ navigation }) => {
             Frequência:
           </Text>
           <Text style={[styles.detailValue, { color: theme.colors.text }]}>
-            {getFrequencyIcon(transaction.frequency)}{" "}
-            {getFrequencyLabel(transaction.frequency)}
+            {frequencyUtils.getIcon(transaction.frequency)}{" "}
+            {frequencyUtils.getLabel(transaction.frequency)}
           </Text>
         </View>
 
