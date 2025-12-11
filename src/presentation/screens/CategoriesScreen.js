@@ -6,10 +6,10 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "../../domain/contexts/ThemeContext";
 import { useTransactions } from "../../domain/contexts/TransactionsContext";
 import { Card } from "../components";
+import { ScreenHeader } from "../components/molecules/ScreenHeader";
 import CategoryModal from "../components/legacy/CategoryModal";
 import CategoryItem from "../components/legacy/CategoryItem";
 import { useCategoryModal } from "../hooks/useCategoryModal";
@@ -46,25 +46,12 @@ const CategoriesScreen = ({ navigation }) => {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      <LinearGradient
-        colors={theme.colors.gradient}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <View>
-            <Text style={styles.headerTitle}>Categorias</Text>
-            <Text style={styles.headerSubtitle}>Gerencie suas categorias</Text>
-          </View>
-        </View>
-      </LinearGradient>
+      <ScreenHeader
+        title="Categorias"
+        subtitle="Gerencie suas categorias"
+        showBackButton={true}
+        onBack={() => navigation.goBack()}
+      />
 
       <ScrollView
         style={styles.scrollView}

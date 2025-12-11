@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from "../../domain/contexts/ThemeContext";
 import { useCurrency } from "../../domain/contexts/CurrencyContext";
 import { Card, Button } from "../components";
+import { ScreenHeader } from "../components/molecules/ScreenHeader";
 
 const CurrencySettingsScreen = ({ navigation }) => {
   const { theme } = useTheme();
@@ -71,25 +71,12 @@ const CurrencySettingsScreen = ({ navigation }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <LinearGradient
-        colors={theme.colors.gradient}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-      >
-        <View style={styles.headerContent}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <View>
-            <Text style={styles.headerTitle}>Moeda Padrão</Text>
-            <Text style={styles.headerSubtitle}>Escolha sua moeda preferida</Text>
-          </View>
-        </View>
-      </LinearGradient>
+      <ScreenHeader
+        title="Configuração de Moeda"
+        subtitle="Selecione sua moeda padrão"
+        showBackButton={true}
+        onBack={() => navigation.goBack()}
+      />
 
       <ScrollView 
         style={styles.scrollView}
