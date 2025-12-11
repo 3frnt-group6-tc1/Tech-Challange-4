@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../../domain/contexts/ThemeContext";
 import { useAuth } from "../../domain/contexts/AuthContext";
-import { Button, Card } from "../components";
+import { Button } from "../components";
 import TextField from "../components/legacy/form/TextField";
 import { useLogin } from "../hooks/useLogin";
 import { BiometricService } from "../../infrastructure/services/BiometricService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthLayout } from "../components/layouts/AuthLayout";
 
 const LoginScreen = ({ navigation }) => {
   const { theme } = useTheme();
@@ -82,157 +73,71 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    <AuthLayout
+      title="Bem-vindo de volta!"
+      subtitle="Entre na sua conta para continuar"
+      formTitle="Entrar"
     >
-      <LinearGradient
-        colors={theme.colors.gradient}
-        style={styles.header}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+      <TextField
+        control={control}
+        validationRules={validationRules}
+        name="email"
+        label="Email"
+        placeholder="seu@email.com"
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+
+      <TextField
+        control={control}
+        validationRules={validationRules}
+        name="password"
+        label="Senha"
+        placeholder="Sua senha"
+        secureTextEntry
+      />
+
+      <Button
+        title="Entrar"
+        onPress={handleSubmit}
+        loading={loading}
+        style={styles.loginButton}
+      />
+
+      {biometricAvailable && biometricEnabled && (
+        <TouchableOpacity
+          style={[styles.biometricButton, { borderColor: theme.colors.primary }]}
+          onPress={handleBiometricLogin}
+          disabled={biometricLoading}
+        >
+          <Ionicons 
+            name="finger-print" 
+            size={24} 
+            color={theme.colors.primary} 
+            style={styles.biometricIcon}
+          />
+          <Text style={[styles.biometricText, { color: theme.colors.primary }]}>
+            {biometricLoading ? 'Autenticando...' : 'Entrar com Biometria'}
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      <TouchableOpacity
+        style={styles.linkButton}
+        onPress={() => navigation.navigate("Register")}
       >
-        <Text style={[styles.headerTitle, { color: "#FFFFFF" }]}>
-          Bem-vindo de volta!
+        <Text style={[styles.linkText, { color: theme.colors.textSecondary }]}>
+          Não tem uma conta?{" "}
+          <Text style={[styles.linkTextBold, { color: theme.colors.primary }]}>
+            Registre-se
+          </Text>
         </Text>
-        <Text
-          style={[styles.headerSubtitle, { color: "rgba(255, 255, 255, 0.8)" }]}
-        >
-          Entre na sua conta para continuar
-        </Text>
-      </LinearGradient>
-
-      <View style={styles.content}>
-        <KeyboardAvoidingView
-          style={styles.keyboardView}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-          >
-            <Card style={styles.formCard}>
-              <Text style={[styles.formTitle, { color: theme.colors.text }]}>
-                Entrar
-              </Text>
-
-              <TextField
-                control={control}
-                validationRules={validationRules}
-                name="email"
-                label="Email"
-                placeholder="seu@email.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-
-              <TextField
-                control={control}
-                validationRules={validationRules}
-                name="password"
-                label="Senha"
-                placeholder="Sua senha"
-                secureTextEntry
-              />
-
-              <Button
-                title="Entrar"
-                onPress={handleSubmit}
-                loading={loading}
-                style={styles.loginButton}
-              />
-
-              {biometricAvailable && biometricEnabled && (
-                <TouchableOpacity
-                  style={[styles.biometricButton, { borderColor: theme.colors.primary }]}
-                  onPress={handleBiometricLogin}
-                  disabled={biometricLoading}
-                >
-                  <Ionicons 
-                    name="finger-print" 
-                    size={24} 
-                    color={theme.colors.primary} 
-                    style={styles.biometricIcon}
-                  />
-                  <Text style={[styles.biometricText, { color: theme.colors.primary }]}>
-                    {biometricLoading ? 'Autenticando...' : 'Entrar com Biometria'}
-                  </Text>
-                </TouchableOpacity>
-              )}
-
-              <TouchableOpacity
-                style={styles.linkButton}
-                onPress={() => navigation.navigate("Register")}
-              >
-                <Text
-                  style={[
-                    styles.linkText,
-                    { color: theme.colors.textSecondary },
-                  ]}
-                >
-                  Não tem uma conta?{" "}
-                  <Text
-                    style={[
-                      styles.linkTextBold,
-                      { color: theme.colors.primary },
-                    ]}
-                  >
-                    Registre-se
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-            </Card>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
-    </View>
+      </TouchableOpacity>
+    </AuthLayout>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    paddingTop: 60,
-    paddingBottom: 40,
-    paddingHorizontal: 24,
-    alignItems: "center",
-  },
-  content: {
-    flex: 1,
-  },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    textAlign: "center",
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingTop: 16,
-  },
-  formCard: {
-    marginTop: 0,
-    marginBottom: 24,
-  },
-  formTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 24,
-  },
   loginButton: {
     marginTop: 8,
     marginBottom: 16,
