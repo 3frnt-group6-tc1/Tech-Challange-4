@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import TransactionItem from "../../components/TransactionItem";
-import { lightTheme, darkTheme } from "../../contexts/ThemeContext";
+import TransactionItem from "../../src/presentation/components/legacy/TransactionItem";
+import { lightTheme, darkTheme } from "../../src/domain/contexts/ThemeContext";
 
 // Mock AsyncStorage
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -11,8 +11,8 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
 
 // Mock the useTheme hook
 const mockUseTheme = jest.fn();
-jest.mock("../../contexts/ThemeContext", () => {
-  const originalModule = jest.requireActual("../../contexts/ThemeContext");
+jest.mock("../../src/domain/contexts/ThemeContext", () => {
+  const originalModule = jest.requireActual("../../src/domain/contexts/ThemeContext");
   return {
     ...originalModule,
     useTheme: () => mockUseTheme(),
@@ -21,19 +21,21 @@ jest.mock("../../contexts/ThemeContext", () => {
 
 // Mock the useCurrency hook
 const mockUseCurrency = jest.fn();
-jest.mock("../../contexts/CurrencyContext", () => ({
+jest.mock("../../src/domain/contexts/CurrencyContext", () => ({
   useCurrency: () => mockUseCurrency(),
 }));
 
 // Mock the useImagePreview hook
 const mockUseImagePreview = jest.fn();
-jest.mock("../../hooks/useImagePreview", () => ({
+jest.mock("../../src/presentation/hooks/useImagePreview", () => ({
   useImagePreview: () => mockUseImagePreview(),
 }));
 
 // Mock formatDate utility
-jest.mock("../../utils/dateFormatter", () => ({
-  formatDate: (date) => "01/01/2023",
+jest.mock("../../src/domain/services/format-service", () => ({
+  formatService: {
+    formatDate: (date) => "01/01/2023",
+  },
 }));
 
 // Test wrapper component

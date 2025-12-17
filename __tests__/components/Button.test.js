@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
-import { Button } from "../../components/Button";
-import { lightTheme, darkTheme } from "../../contexts/ThemeContext";
+import { Button } from "../../src/presentation/components";
+import { lightTheme, darkTheme } from "../../src/domain/contexts/ThemeContext";
 
 // Mock AsyncStorage
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -11,8 +11,8 @@ jest.mock("@react-native-async-storage/async-storage", () => ({
 
 // Mock the useTheme hook
 const mockUseTheme = jest.fn();
-jest.mock("../../contexts/ThemeContext", () => {
-  const originalModule = jest.requireActual("../../contexts/ThemeContext");
+jest.mock("../../src/domain/contexts/ThemeContext", () => {
+  const originalModule = jest.requireActual("../../src/domain/contexts/ThemeContext");
   return {
     ...originalModule,
     useTheme: () => mockUseTheme(),

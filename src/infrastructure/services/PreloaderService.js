@@ -1,4 +1,4 @@
-import firestoreService from "../../../services/firestoreService";
+import firestoreService from "./firestoreService";
 
 /**
  * PreloaderService

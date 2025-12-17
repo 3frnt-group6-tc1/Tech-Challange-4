@@ -1,8 +1,18 @@
 import { PreloaderService } from "../../src/infrastructure/services/PreloaderService";
-import firestoreService from "../../services/firestoreService";
 
 // Mock firestoreService
-jest.mock("../../services/firestoreService");
+const mockGetUserTransactions = jest.fn();
+const mockGetUserRecurringTransactions = jest.fn();
+const mockGetUserCategories = jest.fn();
+
+jest.mock("../../src/infrastructure/services/firestoreService", () => ({
+  __esModule: true,
+  default: {
+    getUserTransactions: (...args) => mockGetUserTransactions(...args),
+    getUserRecurringTransactions: (...args) => mockGetUserRecurringTransactions(...args),
+    getUserCategories: (...args) => mockGetUserCategories(...args),
+  },
+}));
 
 describe("PreloaderService", () => {
   const mockUserId = "test-user-123";
@@ -24,10 +34,10 @@ describe("PreloaderService", () => {
     jest.spyOn(console, "warn").mockImplementation(() => {});
     jest.spyOn(console, "error").mockImplementation(() => {});
 
-    // Mock all firestoreService methods
-    firestoreService.getUserTransactions = jest.fn();
-    firestoreService.getUserCategories = jest.fn();
-    firestoreService.getUserRecurringTransactions = jest.fn();
+    // Reset mock implementations
+    mockGetUserTransactions.mockReset();
+    mockGetUserRecurringTransactions.mockReset();
+    mockGetUserCategories.mockReset();
   });
 
   afterEach(() => {
@@ -51,9 +61,9 @@ describe("PreloaderService", () => {
     });
 
     it("should successfully preload all data when all requests succeed", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue(mockTransactions);
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
-      firestoreService.getUserRecurringTransactions.mockResolvedValue(
+      mockGetUserTransactions.mockResolvedValue(mockTransactions);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserRecurringTransactions.mockResolvedValue(
         mockRecurringTransactions
       );
 
@@ -97,14 +107,14 @@ describe("PreloaderService", () => {
       });
 
       // Verify all firestore service methods were called
-      expect(firestoreService.getUserTransactions).toHaveBeenCalledWith(
+      expect(mockGetUserTransactions).toHaveBeenCalledWith(
         mockUserId
       );
-      expect(firestoreService.getUserCategories).toHaveBeenCalledWith(
+      expect(mockGetUserCategories).toHaveBeenCalledWith(
         mockUserId
       );
       expect(
-        firestoreService.getUserRecurringTransactions
+        mockGetUserRecurringTransactions
       ).toHaveBeenCalledWith(mockUserId);
     });
 
@@ -112,9 +122,9 @@ describe("PreloaderService", () => {
       const transactionError = new Error("Failed to load transactions");
       const categoryError = new Error("Failed to load categories");
 
-      firestoreService.getUserTransactions.mockRejectedValue(transactionError);
-      firestoreService.getUserCategories.mockRejectedValue(categoryError);
-      firestoreService.getUserRecurringTransactions.mockResolvedValue(
+      mockGetUserTransactions.mockRejectedValue(transactionError);
+      mockGetUserCategories.mockRejectedValue(categoryError);
+      mockGetUserRecurringTransactions.mockResolvedValue(
         mockRecurringTransactions
       );
 
@@ -149,9 +159,9 @@ describe("PreloaderService", () => {
 
     it("should handle all requests failing", async () => {
       const error = new Error("Network error");
-      firestoreService.getUserTransactions.mockRejectedValue(error);
-      firestoreService.getUserCategories.mockRejectedValue(error);
-      firestoreService.getUserRecurringTransactions.mockRejectedValue(error);
+      mockGetUserTransactions.mockRejectedValue(error);
+      mockGetUserCategories.mockRejectedValue(error);
+      mockGetUserRecurringTransactions.mockRejectedValue(error);
 
       const result = await PreloaderService.preloadCriticalData(mockUserId);
 
@@ -162,9 +172,9 @@ describe("PreloaderService", () => {
     });
 
     it("should log performance metrics", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue(mockTransactions);
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
-      firestoreService.getUserRecurringTransactions.mockResolvedValue(
+      mockGetUserTransactions.mockResolvedValue(mockTransactions);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserRecurringTransactions.mockResolvedValue(
         mockRecurringTransactions
       );
 
@@ -177,9 +187,9 @@ describe("PreloaderService", () => {
     });
 
     it("should handle empty data arrays", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue([]);
-      firestoreService.getUserCategories.mockResolvedValue([]);
-      firestoreService.getUserRecurringTransactions.mockResolvedValue([]);
+      mockGetUserTransactions.mockResolvedValue([]);
+      mockGetUserCategories.mockResolvedValue([]);
+      mockGetUserRecurringTransactions.mockResolvedValue([]);
 
       const result = await PreloaderService.preloadCriticalData(mockUserId);
 
@@ -208,7 +218,7 @@ describe("PreloaderService", () => {
 
   describe("preloadTransactions", () => {
     it("should successfully load transactions", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue(mockTransactions);
+      mockGetUserTransactions.mockResolvedValue(mockTransactions);
 
       const result = await PreloaderService.preloadTransactions(mockUserId);
 
@@ -217,7 +227,7 @@ describe("PreloaderService", () => {
         count: mockTransactions.length,
         data: mockTransactions,
       });
-      expect(firestoreService.getUserTransactions).toHaveBeenCalledWith(
+      expect(mockGetUserTransactions).toHaveBeenCalledWith(
         mockUserId
       );
       expect(console.log).toHaveBeenCalledWith(
@@ -227,7 +237,7 @@ describe("PreloaderService", () => {
 
     it("should throw error when loading transactions fails", async () => {
       const error = new Error("Failed to load transactions");
-      firestoreService.getUserTransactions.mockRejectedValue(error);
+      mockGetUserTransactions.mockRejectedValue(error);
 
       await expect(
         PreloaderService.preloadTransactions(mockUserId)
@@ -241,7 +251,7 @@ describe("PreloaderService", () => {
 
   describe("preloadCategories", () => {
     it("should successfully load categories", async () => {
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
 
       const result = await PreloaderService.preloadCategories(mockUserId);
 
@@ -249,7 +259,7 @@ describe("PreloaderService", () => {
         type: "categories",
         data: mockCategories,
       });
-      expect(firestoreService.getUserCategories).toHaveBeenCalledWith(
+      expect(mockGetUserCategories).toHaveBeenCalledWith(
         mockUserId
       );
       expect(console.log).toHaveBeenCalledWith(
@@ -259,7 +269,7 @@ describe("PreloaderService", () => {
 
     it("should throw error when loading categories fails", async () => {
       const error = new Error("Failed to load categories");
-      firestoreService.getUserCategories.mockRejectedValue(error);
+      mockGetUserCategories.mockRejectedValue(error);
 
       await expect(
         PreloaderService.preloadCategories(mockUserId)
@@ -273,7 +283,7 @@ describe("PreloaderService", () => {
 
   describe("preloadRecurringTransactions", () => {
     it("should successfully load recurring transactions", async () => {
-      firestoreService.getUserRecurringTransactions.mockResolvedValue(
+      mockGetUserRecurringTransactions.mockResolvedValue(
         mockRecurringTransactions
       );
 
@@ -287,7 +297,7 @@ describe("PreloaderService", () => {
         data: mockRecurringTransactions,
       });
       expect(
-        firestoreService.getUserRecurringTransactions
+        mockGetUserRecurringTransactions
       ).toHaveBeenCalledWith(mockUserId);
       expect(console.log).toHaveBeenCalledWith(
         `PreloaderService: Loaded ${mockRecurringTransactions.length} recurring transactions`
@@ -296,7 +306,7 @@ describe("PreloaderService", () => {
 
     it("should throw error when loading recurring transactions fails", async () => {
       const error = new Error("Failed to load recurring transactions");
-      firestoreService.getUserRecurringTransactions.mockRejectedValue(error);
+      mockGetUserRecurringTransactions.mockRejectedValue(error);
 
       await expect(
         PreloaderService.preloadRecurringTransactions(mockUserId)
@@ -342,7 +352,7 @@ describe("PreloaderService", () => {
     });
 
     it("should load specific transactions data", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue(mockTransactions);
+      mockGetUserTransactions.mockResolvedValue(mockTransactions);
 
       const result = await PreloaderService.preloadSpecificData(mockUserId, [
         "transactions",
@@ -362,7 +372,7 @@ describe("PreloaderService", () => {
     });
 
     it("should load specific categories data", async () => {
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
 
       const result = await PreloaderService.preloadSpecificData(mockUserId, [
         "categories",
@@ -376,7 +386,7 @@ describe("PreloaderService", () => {
     });
 
     it("should load specific recurring transactions data", async () => {
-      firestoreService.getUserRecurringTransactions.mockResolvedValue(
+      mockGetUserRecurringTransactions.mockResolvedValue(
         mockRecurringTransactions
       );
 
@@ -392,8 +402,8 @@ describe("PreloaderService", () => {
     });
 
     it("should load multiple specific data types", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue(mockTransactions);
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserTransactions.mockResolvedValue(mockTransactions);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
 
       const result = await PreloaderService.preloadSpecificData(mockUserId, [
         "transactions",
@@ -422,7 +432,7 @@ describe("PreloaderService", () => {
     });
 
     it("should handle mix of valid and invalid data types", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue(mockTransactions);
+      mockGetUserTransactions.mockResolvedValue(mockTransactions);
 
       const result = await PreloaderService.preloadSpecificData(mockUserId, [
         "transactions",
@@ -439,8 +449,8 @@ describe("PreloaderService", () => {
 
     it("should handle failures in specific data loading", async () => {
       const error = new Error("Failed to load");
-      firestoreService.getUserTransactions.mockRejectedValue(error);
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserTransactions.mockRejectedValue(error);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
 
       const result = await PreloaderService.preloadSpecificData(mockUserId, [
         "transactions",
@@ -476,9 +486,9 @@ describe("PreloaderService", () => {
 
   describe("Integration Tests", () => {
     it("should handle concurrent preload requests", async () => {
-      firestoreService.getUserTransactions.mockResolvedValue(mockTransactions);
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
-      firestoreService.getUserRecurringTransactions.mockResolvedValue(
+      mockGetUserTransactions.mockResolvedValue(mockTransactions);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserRecurringTransactions.mockResolvedValue(
         mockRecurringTransactions
       );
 
@@ -500,9 +510,9 @@ describe("PreloaderService", () => {
         amount: Math.random() * 1000,
       }));
 
-      firestoreService.getUserTransactions.mockResolvedValue(largeTransactions);
-      firestoreService.getUserCategories.mockResolvedValue(mockCategories);
-      firestoreService.getUserRecurringTransactions.mockResolvedValue(
+      mockGetUserTransactions.mockResolvedValue(largeTransactions);
+      mockGetUserCategories.mockResolvedValue(mockCategories);
+      mockGetUserRecurringTransactions.mockResolvedValue(
         mockRecurringTransactions
       );
 

@@ -3,14 +3,14 @@ import { render, act } from "@testing-library/react-native";
 import { Text, View } from "react-native";
 
 // Mock the contexts
-jest.mock("../../contexts/TransactionsContext");
-jest.mock("../../contexts/CurrencyContext");
+jest.mock("../../src/domain/contexts/TransactionsContext");
+jest.mock("../../src/domain/contexts/CurrencyContext");
 
 // Mock useFormValidation hook
-jest.mock("../../hooks/useFormValidation");
+jest.mock("../../src/presentation/hooks/useFormValidation");
 
 // Mock validation rules
-jest.mock("../../utils/formFieldRules", () => ({
+jest.mock("../../src/domain/utils/formFieldRules", () => ({
   formValidationSets: {
     recurringTransaction: jest.fn(() => ({
       title: { required: "Title is required" },
@@ -23,10 +23,10 @@ jest.mock("../../utils/formFieldRules", () => ({
   },
 }));
 
-import { useRecurringTransactionModal } from "../../hooks/useRecurringTransactionModal";
-import { useTransactions } from "../../contexts/TransactionsContext";
-import { useCurrency } from "../../contexts/CurrencyContext";
-import { useFormValidation } from "../../hooks/useFormValidation";
+import { useRecurringTransactionModal } from "../../src/presentation/hooks/useRecurringTransactionModal";
+import { useTransactions } from "../../src/domain/contexts/TransactionsContext";
+import { useCurrency } from "../../src/domain/contexts/CurrencyContext";
+import { useFormValidation } from "../../src/presentation/hooks/useFormValidation";
 import { Alert } from "react-native";
 
 describe("useRecurringTransactionModal", () => {
@@ -578,7 +578,7 @@ describe("useRecurringTransactionModal", () => {
 
   describe("Validation Rules", () => {
     it("should create validation rules with available categories and parseCurrency", () => {
-      const { formValidationSets } = require("../../utils/formFieldRules");
+      const { formValidationSets } = require("../../src/domain/utils/formFieldRules");
 
       render(
         <TestComponent

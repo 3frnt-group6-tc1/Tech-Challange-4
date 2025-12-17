@@ -1,11 +1,11 @@
 import React from "react";
 import { renderHook, act, waitFor } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CurrencyProvider, useCurrency } from "../../contexts/CurrencyContext";
-import { useAuth } from "../../contexts/AuthContext";
+import { CurrencyProvider, useCurrency } from "../../src/domain/contexts/CurrencyContext";
+import { useAuth } from "../../src/domain/contexts/AuthContext";
 
 // Mock dependencies
-jest.mock("../../contexts/AuthContext");
+jest.mock("../../src/domain/contexts/AuthContext");
 jest.mock("@react-native-async-storage/async-storage", () => ({
   getItem: jest.fn(),
   setItem: jest.fn(),
