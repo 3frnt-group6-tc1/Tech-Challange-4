@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useTransactions } from "../../domain/contexts/TransactionsContext";
+import { useEffect, useRef, useContext } from "react";
+import { TransactionsContext } from "../../domain/contexts/TransactionsContext";
 import { useNotifications } from "../../domain/contexts/NotificationContext";
 
 /**
@@ -7,8 +7,13 @@ import { useNotifications } from "../../domain/contexts/NotificationContext";
  * Deve ser colocado dentro de NotificationProvider e TransactionsProvider
  */
 const RealtimeNotifier = () => {
-  const { transactions, recurringTransactions } = useTransactions();
+  // Usar useContext diretamente para evitar erro durante hot-reload
+  const transactionsContext = useContext(TransactionsContext);
   const { showUpdateNotification, showNewDataNotification } = useNotifications();
+  
+  // Fallback seguro para quando o contexto não está disponível
+  const transactions = transactionsContext?.transactions || [];
+  const recurringTransactions = transactionsContext?.recurringTransactions || [];
 
   // Refs para rastrear valores anteriores
   const prevTransactionsCount = useRef(null);
@@ -17,6 +22,11 @@ const RealtimeNotifier = () => {
 
   // Monitorar mudanças em transações
   useEffect(() => {
+    // Ignorar se contexto não está disponível ainda
+    if (!transactionsContext) {
+      return;
+    }
+    
     // Ignorar primeiro render (carregamento inicial)
     if (isFirstRender.current) {
       prevTransactionsCount.current = transactions.length;
@@ -44,6 +54,11 @@ const RealtimeNotifier = () => {
 
   // Monitorar mudanças em transações recorrentes
   useEffect(() => {
+    // Ignorar se contexto não está disponível ainda
+    if (!transactionsContext) {
+      return;
+    }
+    
     // Ignorar primeiro render
     if (isFirstRender.current) {
       prevRecurringCount.current = recurringTransactions.length;

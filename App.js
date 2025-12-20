@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from "./src/domain/contexts/ThemeContext";
 import { TransactionsProvider } from "./src/domain/contexts/TransactionsContext";
 import { CurrencyProvider } from "./src/domain/contexts/CurrencyContext";
 import { NotificationProvider } from "./src/domain/contexts/NotificationContext";
+import { EncryptionProvider } from "./src/domain/contexts/EncryptionContext";
 import { cacheService } from "./src/infrastructure/services";
 import LoadingScreen from "./src/presentation/components/legacy/LoadingScreen";
 import RealtimeNotifier from "./src/presentation/components/RealtimeNotifier";
@@ -209,16 +210,18 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <CurrencyProvider>
-          <TransactionsProvider>
-            <NotificationProvider>
-              <RealtimeNotifier />
-              <AppNavigator />
-            </NotificationProvider>
-          </TransactionsProvider>
-        </CurrencyProvider>
-      </AuthProvider>
+      <EncryptionProvider>
+        <AuthProvider>
+          <CurrencyProvider>
+            <TransactionsProvider>
+              <NotificationProvider>
+                <RealtimeNotifier />
+                <AppNavigator />
+              </NotificationProvider>
+            </TransactionsProvider>
+          </CurrencyProvider>
+        </AuthProvider>
+      </EncryptionProvider>
     </ThemeProvider>
   );
 };

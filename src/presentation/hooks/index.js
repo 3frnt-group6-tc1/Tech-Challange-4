@@ -24,6 +24,9 @@ export {
 // Hooks de notificações
 export { useRealtimeNotifications } from "./useRealtimeNotifications";
 
+// Hooks de segurança e criptografia
+export { useSecureData, useSecureForm, useSecurePIN } from "./useSecureData";
+
 // Hooks existentes (legacy)
 export { useCategoryModal } from "./useCategoryModal";
 export { useFormValidation } from "./useFormValidation";
