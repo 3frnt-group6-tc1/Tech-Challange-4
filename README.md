@@ -27,7 +27,9 @@
 - [Segurança](#-segurança)
 - [Performance](#-performance)
 - [Testes](#-testes)
-- [Roadmap](#-roadmap)
+- [Scripts Disponíveis](#-scripts-disponíveis)
+- [Equipe](#-equipe)
+- [Licença](#-licença)
 
 ---
 
