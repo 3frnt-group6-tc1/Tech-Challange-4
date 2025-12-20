@@ -61,10 +61,12 @@ describe("useTransactionsScreen", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers();
     global.hookResult = null;
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     delete global.hookResult;
   });
 
@@ -143,6 +145,11 @@ describe("useTransactionsScreen", () => {
         global.hookResult.handleSearchChange("salary");
       });
 
+      // Advance timers to trigger debounce (500ms)
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
       expect(global.hookResult.filteredTransactions.length).toBe(1);
       expect(global.hookResult.filteredTransactions[0].title).toBe("Salary");
     });
@@ -152,6 +159,11 @@ describe("useTransactionsScreen", () => {
 
       act(() => {
         global.hookResult.handleSearchChange("food");
+      });
+
+      // Advance timers to trigger debounce (500ms)
+      act(() => {
+        jest.advanceTimersByTime(500);
       });
 
       expect(global.hookResult.filteredTransactions.length).toBe(1);
@@ -165,6 +177,11 @@ describe("useTransactionsScreen", () => {
         global.hookResult.handleSearchChange("weekly");
       });
 
+      // Advance timers to trigger debounce (500ms)
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
       expect(global.hookResult.filteredTransactions.length).toBe(1);
       expect(global.hookResult.filteredTransactions[0].description).toContain(
         "Weekly"
@@ -176,6 +193,11 @@ describe("useTransactionsScreen", () => {
 
       act(() => {
         global.hookResult.handleSearchChange("SALARY");
+      });
+
+      // Advance timers to trigger debounce (500ms)
+      act(() => {
+        jest.advanceTimersByTime(500);
       });
 
       expect(global.hookResult.filteredTransactions.length).toBe(1);

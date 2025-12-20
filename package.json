@@ -67,7 +67,7 @@
       "/ios/"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|@react-native|expo|@expo|react-native-reanimated|react-native-chart-kit)/)"
+      "node_modules/(?!(react-native|@react-native|expo|@expo|expo-crypto|expo-secure-store|base64-js|react-native-reanimated|react-native-chart-kit)/)"
     ],
     "collectCoverageFrom": [
       "components/**/*.{js,jsx}",
