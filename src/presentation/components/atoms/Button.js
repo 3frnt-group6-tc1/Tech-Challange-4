@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Componente de botão reutilizável
+ * @module presentation/components/atoms/Button
+ */
+
 import React from "react";
 import {
   TouchableOpacity,
@@ -7,6 +12,47 @@ import {
 } from "react-native";
 import { useTheme } from "../../../domain/contexts/ThemeContext";
 
+/**
+ * Componente de botão configurável com suporte a variantes, tamanhos e estados
+ * 
+ * @component
+ * @description
+ * Botão atômico seguindo Atomic Design. Suporta:
+ * - Variantes visuais (primary, secondary, danger, success)
+ * - Tamanhos (sm, md, lg)
+ * - Estado de loading com spinner
+ * - Estado desabilitado
+ * 
+ * @param {Object} props - Propriedades do componente
+ * @param {string} props.title - Texto do botão (obrigatório)
+ * @param {Function} props.onPress - Callback ao pressionar
+ * @param {'primary'|'secondary'|'danger'|'success'} [props.variant='primary'] - Estilo visual
+ * @param {'sm'|'md'|'lg'} [props.size='md'] - Tamanho do botão
+ * @param {boolean} [props.disabled=false] - Se o botão está desabilitado
+ * @param {boolean} [props.loading=false] - Se deve mostrar spinner de loading
+ * @param {Object} [props.style] - Estilos adicionais para o container
+ * @param {Object} [props.textStyle] - Estilos adicionais para o texto
+ * @param {string} [props.testID] - ID para testes automatizados
+ * 
+ * @example
+ * // Botão primário padrão
+ * <Button title="Salvar" onPress={handleSave} />
+ * 
+ * @example
+ * // Botão de perigo com loading
+ * <Button 
+ *   title="Excluir" 
+ *   variant="danger" 
+ *   loading={isDeleting}
+ *   onPress={handleDelete} 
+ * />
+ * 
+ * @example
+ * // Botão secundário pequeno
+ * <Button title="Cancelar" variant="secondary" size="sm" onPress={handleCancel} />
+ * 
+ * @returns {React.ReactElement} Componente Button renderizado
+ */
 export const Button = React.memo(
   ({
     title,

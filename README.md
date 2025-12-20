@@ -1,6 +1,6 @@
-# TechChallenge3 – Aplicativo de Gerenciamento Financeiro
+# 💰 Tech Challenge 4 - Aplicativo de Gerenciamento Financeiro
 
-<div>
+<div align="center">
 
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
@@ -8,78 +8,188 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=coverage)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=3frnt-group6-tc1_Tech-Challange-4&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=3frnt-group6-tc1_Tech-Challange-4)
 
+**Aplicativo mobile de gerenciamento financeiro pessoal desenvolvido em React Native (Expo)**
+
 </div>
 
-Aplicativo de gerenciamento financeiro desenvolvido em React Native (Expo)
+---
+
+## 📋 Sumário
+
+- [Visão Geral](#-visão-geral)
+- [Arquitetura](#-arquitetura)
+- [Tecnologias](#-tecnologias)
+- [Funcionalidades](#-funcionalidades)
+- [Instalação](#-instalação)
+- [Configuração](#-configuração)
+- [Estrutura de Pastas](#-estrutura-de-pastas)
+- [Padrões e Boas Práticas](#-padrões-e-boas-práticas)
+- [Segurança](#-segurança)
+- [Performance](#-performance)
+- [Testes](#-testes)
+- [Roadmap](#-roadmap)
 
 ---
 
-## ✨ Principais Funcionalidades
+## 🎯 Visão Geral
 
-- Autenticação de usuários via Firebase (e-mail & senha)
-- Temas claro/escuro com persistência no dispositivo
-- Navegação por **Stack** e **Bottom Tabs** (React Navigation)
-- Componentes reutilizáveis (`Button`, `Input`, `Card`)
-- Estrutura preparada para integração com Firestore/Storage
-- Adição de Receitas e Subtração de Despejas
+O Tech Challenge 4 é uma evolução do aplicativo de gerenciamento financeiro, implementando melhorias arquiteturais significativas, otimizações de performance e recursos avançados de segurança.
 
----
+### Objetivos do Projeto
 
-## 🛠️ Tecnologias & Ferramentas
-
-| Camada        | Tecnologia                                    |
-| ------------- | --------------------------------------------- |
-| Linguagem     | React 19 · React Native 0.81 (Expo SDK 54)    |
-| UI            | React Native Components · Expo LinearGradient |
-| Navegação     | `@react-navigation/*`                         |
-| Estado global | Context API (`AuthContext`, `ThemeContext`)   |
-| Backend       | Firebase Authentication (Email/Password)      |
-| Persistência  | AsyncStorage                                  |
+- ✅ Implementar **Clean Architecture** com separação clara de camadas
+- ✅ Gerenciamento de estado avançado com **Context API + React Query**
+- ✅ **Lazy Loading** e otimizações de renderização
+- ✅ Sistema de **cache inteligente** para dados offline
+- ✅ Interface **reativa em tempo real** com Firebase
+- ✅ **Criptografia AES-256** para dados sensíveis
+- ✅ Validações robustas e segurança aprimorada
 
 ---
 
-## 📂 Estrutura de Pastas (resumida)
+## 🏗️ Arquitetura
+
+O projeto segue os princípios da **Clean Architecture**, organizando o código em camadas bem definidas:
 
 ```
-Tech-Challenge-3/
-├─ assets/               # Ícones e imagens estáticas
-├─ components/           # Button, Card, Input...
-├─ contexts/             # AuthContext, ThemeContext
-├─ screens/              # Login, Register, Home, Profile, Settings
-├─ firebase.config.js    # Inicialização do Firebase
-├─ App.js                # Navegação raiz + Providers
-└─ README.md             # Este arquivo
+┌─────────────────────────────────────────────────────────────┐
+│                    PRESENTATION LAYER                        │
+│  (Screens, Components, Hooks, Contexts de UI)               │
+├─────────────────────────────────────────────────────────────┤
+│                      DOMAIN LAYER                            │
+│  (Entities, Use Cases, Repositories Interfaces, Contexts)   │
+├─────────────────────────────────────────────────────────────┤
+│                   INFRASTRUCTURE LAYER                       │
+│  (Services, Repository Implementations, Config)             │
+└─────────────────────────────────────────────────────────────┘
 ```
+
+### Camadas
+
+| Camada | Responsabilidade |
+|--------|-----------------|
+| **Domain** | Regras de negócio, entidades, interfaces e casos de uso |
+| **Infrastructure** | Implementações concretas, serviços externos, Firebase |
+| **Presentation** | UI, componentes, hooks, navegação |
 
 ---
 
-## 🚀 Como Rodar Localmente
+## 🛠️ Tecnologias
 
-### 1. Pré-requisitos
+### Core
+
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| React Native | 0.81 | Framework mobile |
+| Expo | SDK 54 | Desenvolvimento e build |
+| React | 19 | Biblioteca UI |
+
+### Gerenciamento de Estado
+
+| Tecnologia | Uso |
+|------------|-----|
+| Context API | Estado global (Auth, Theme, Currency, Transactions) |
+| React Query | Cache, mutations, sincronização de dados |
+| Reducers | Estado complexo com dispatch de ações |
+
+### Backend & Dados
+
+| Tecnologia | Uso |
+|------------|-----|
+| Firebase Auth | Autenticação de usuários |
+| Cloud Firestore | Banco de dados em tempo real |
+| AsyncStorage | Persistência local |
+| Expo SecureStore | Armazenamento seguro de chaves |
+
+### Segurança
+
+| Tecnologia | Uso |
+|------------|-----|
+| CryptoJS | Criptografia AES-256-CBC |
+| Expo Crypto | Geração segura de chaves |
+| Expo LocalAuthentication | Biometria (Face ID/Touch ID) |
+
+### Navegação
+
+| Tecnologia | Uso |
+|------------|-----|
+| React Navigation | Navegação Stack e Tabs |
+| Lazy Loading | Carregamento sob demanda de telas |
+
+---
+
+## ✨ Funcionalidades
+
+### 💳 Gerenciamento de Transações
+- Adicionar receitas e despesas
+- Editar e excluir transações
+- Filtros por tipo, categoria, data
+- Busca com debounce
+- Transações recorrentes
+
+### 📊 Dashboard e Relatórios
+- Visão geral do saldo
+- Gráficos de gastos por categoria
+- Exportação de relatórios (PDF/CSV)
+- Análise de tendências
+
+### 🔐 Segurança
+- Login com email/senha
+- Autenticação biométrica
+- Criptografia de dados sensíveis
+- Persistência segura de sessão
+
+### 🎨 Personalização
+- Tema claro/escuro
+- Múltiplas moedas
+- Categorias personalizáveis
+- Preferências por usuário
+
+### 🔄 Tempo Real
+- Atualizações instantâneas via Firebase
+- Sincronização automática
+- Notificações de mudanças
+- Modo offline com cache
+
+---
+
+## 🚀 Instalação
+
+### Pré-requisitos
 
 - Node.js ≥ 18
-- Expo CLI `npm install -g expo-cli`
-- Conta Firebase (gratuita)
+- npm ou yarn
+- Expo CLI (`npm install -g expo-cli`)
+- Conta Firebase
 
-### 2. Clonar & instalar dependências
+### Passos
 
 ```bash
-# clone
-git clone https://github.com/<seu-user>/Tech-Challenge-3.git
-cd Tech-Challenge-3
+# 1. Clone o repositório
+git clone https://github.com/3frnt-group6-tc1/Tech-Challange-4.git
+cd Tech-Challange-4
 
-# instalar pacotes
+# 2. Instale as dependências
 npm install
+
+# 3. Configure o Firebase (veja seção Configuração)
+
+# 4. Inicie o projeto
+npx expo start
 ```
 
-### 3. Configurar o Firebase
+---
 
-1. Acesse [Firebase Console](https://console.firebase.google.com) → **Adicionar projeto**.
-2. No menu ⚙️ **Configurações do projeto** → **Suas apps** → adicione um app Web (ícone `</>`).
-3. Copie o objeto `firebaseConfig` gerado.
-4. Abra `firebase.config.js` e substitua o bloco:
+## ⚙️ Configuração
 
-```js
+### Firebase
+
+1. Acesse [Firebase Console](https://console.firebase.google.com)
+2. Crie um novo projeto
+3. Adicione um app Web
+4. Copie as credenciais para `firebase.config.js`:
+
+```javascript
 const firebaseConfig = {
   apiKey: "<API_KEY>",
   authDomain: "<PROJECT_ID>.firebaseapp.com",
@@ -90,63 +200,226 @@ const firebaseConfig = {
 };
 ```
 
-5. No Console Firebase → **Build → Authentication → Métodos de login** → habilite **E-mail/Senha**.
-6. Ainda no Console → **Build → Firestore Database** → clique em **Criar banco de dados** e escolha o modo _Test_ (para desenvolvimento) ou _Production_ conforme sua necessidade.
-7. Em **Regras** defina permissões adequadas. Para testes locais você pode manter o exemplo a seguir:
+5. Habilite **Authentication** → **Email/Password**
+6. Configure **Firestore Database** com as regras:
 
-```js
+```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.auth != null;
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
 ```
 
-### 4. Executar o app
+---
 
-```bash
+## 📁 Estrutura de Pastas
 
-npx expo start
 ```
-
-Use um emulador ou o aplicativo **Expo Go** no celular para escanear o QRCode.
-
-## ☁️ Cloud Firestore
-
-A aplicação utiliza o **Cloud Firestore** para armazenar transações, categorias e demais dados de cada usuário.
-
-- Inicialização em `firebase.config.js` por meio de `getFirestore(app)`
-- Camadas de acesso encapsuladas em `services/firestoreService.js`
-- Estrutura sugerida de coleções:
-  - `users/{uid}/transactions`
-  - `users/{uid}/recurringTransactions`
-  - `users/{uid}/settings/categories`
-
-> As operações são ordenadas por `createdAt` para reduzir leituras e possibilitar paginação.
-
-## 💾 Persistência Local (AsyncStorage)
-
-Preferências leves são salvas localmente com `@react-native-async-storage/async-storage`:
-
-| Chave                      | Contexto/Finalidade                |
-| -------------------------- | ---------------------------------- |
-| `theme`                    | Tema selecionado (claro ou escuro) |
-| `@currency_settings_<uid>` | Moeda padrão do usuário            |
-
-Além disso, o Firebase Auth usa `AsyncStorage` via `initializeAuth` para manter sessões após reiniciar o app.
-
-Não há configuração extra — para limpar dados durante o desenvolvimento basta remover o app/sandbox do emulador ou executar `AsyncStorage.clear()` no console.
+src/
+├── domain/                    # Camada de Domínio
+│   ├── contexts/              # Contextos globais (Auth, Theme, Transactions)
+│   ├── entities/              # Entidades de negócio
+│   │   ├── Transaction.js
+│   │   ├── User.js
+│   │   └── Category.js
+│   ├── repositories/          # Interfaces de repositórios
+│   ├── services/              # Serviços de domínio (validação, formatação)
+│   ├── usecases/              # Casos de uso
+│   │   ├── CreateTransactionUseCase.js
+│   │   ├── GetTransactionsUseCase.js
+│   │   ├── GetBalanceUseCase.js
+│   │   └── ...
+│   └── utils/                 # Utilitários de domínio
+│
+├── infrastructure/            # Camada de Infraestrutura
+│   ├── config/                # Configurações
+│   │   └── queryClient.js     # React Query config
+│   ├── repositories/          # Implementações de repositórios
+│   │   └── firestore-transaction-repository.js
+│   └── services/              # Serviços externos
+│       ├── BiometricService.js
+│       ├── CacheService.js
+│       ├── EncryptionService.js
+│       ├── firestoreService.js
+│       ├── PreloaderService.js
+│       └── SecureStorageService.js
+│
+└── presentation/              # Camada de Apresentação
+    ├── components/            # Componentes reutilizáveis
+    │   ├── atoms/             # Componentes atômicos (Button, Input, Card)
+    │   ├── molecules/         # Componentes moleculares (Forms, Lists)
+    │   └── legacy/            # Componentes legados
+    ├── hooks/                 # Hooks customizados
+    │   ├── useTransactionsQuery.js  # React Query hooks
+    │   ├── useRealtimeTransactions.js
+    │   ├── useDebouncedSearch.js
+    │   ├── useAppState.js
+    │   └── ...
+    ├── screens/               # Telas da aplicação
+    │   ├── HomeScreen.js
+    │   ├── DashboardScreen.js
+    │   ├── TransactionsScreen.js
+    │   └── ...
+    └── styles/                # Estilos compartilhados
+```
 
 ---
 
-## 📜 Scripts
+## 📐 Padrões e Boas Práticas
 
-| Comando           | Descrição                      |
-| ----------------- | ------------------------------ |
-| `npm start`       | Inicia o Metro (alias Expo)    |
-| `npm run android` | Abre emulador Android          |
-| `npm run ios`     | Abre simulador iOS             |
-| `npm run web`     | Abre versão Web (experimental) |
+### Nomenclatura
+
+| Tipo | Convenção | Exemplo |
+|------|-----------|---------|
+| Componentes | PascalCase | `TransactionCard` |
+| Hooks | camelCase com `use` | `useTransactions` |
+| Constantes | UPPER_SNAKE_CASE | `API_BASE_URL` |
+| Arquivos | kebab-case ou PascalCase | `transaction-service.js` |
+
+### Componentização (Atomic Design)
+
+```
+Atoms → Molecules → Organisms → Templates → Pages
+```
+
+- **Atoms**: Button, Input, Card, Text, Loading
+- **Molecules**: TransactionForm, FilterGroup, SectionHeader
+- **Organisms**: TransactionList, Dashboard
+- **Templates**: ScreenLayout, AuthLayout
+- **Pages**: HomeScreen, DashboardScreen
+
+### Princípios SOLID
+
+- **S**ingle Responsibility: Cada componente/classe tem uma responsabilidade
+- **O**pen/Closed: Extensível via props e composition
+- **L**iskov Substitution: Subcomponentes substituíveis
+- **I**nterface Segregation: Interfaces específicas por uso
+- **D**ependency Inversion: Dependências abstraídas via interfaces
+
+---
+
+## 🔒 Segurança
+
+### Criptografia de Dados
+
+O aplicativo utiliza **AES-256-CBC** para criptografar dados sensíveis:
+
+```javascript
+// Dados criptografados antes de salvar no Firebase:
+- Valores de transações (amount)
+- Descrições (description)
+- Títulos (title)
+
+// Armazenamento seguro:
+- Chaves de criptografia → Expo SecureStore
+- Tokens de autenticação → Expo SecureStore
+- Credenciais biométricas → Keychain/Keystore nativo
+```
+
+### Fluxo de Criptografia
+
+```
+┌──────────────────┐     ┌───────────────────┐     ┌─────────────┐
+│ Dados originais  │ --> │EncryptionService  │ --> │  Firebase   │
+│ (usuário digita) │     │ (AES-256-CBC)     │     │ (encrypted) │
+└──────────────────┘     └───────────────────┘     └─────────────┘
+                                  │
+                         ┌────────┴────────┐
+                         │  SecureStore    │
+                         │ (chave segura)  │
+                         └─────────────────┘
+```
+
+---
+
+## ⚡ Performance
+
+### Otimizações Implementadas
+
+| Técnica | Implementação |
+|---------|---------------|
+| **Lazy Loading** | Telas carregadas sob demanda com `React.lazy` |
+| **React.memo** | Componentes memorizados para evitar re-renders |
+| **useMemo/useCallback** | Cálculos e callbacks otimizados |
+| **React Query** | Cache inteligente com staleTime/gcTime |
+| **Debounce** | Inputs de busca com delay configurável |
+| **Preloading** | Dados críticos pré-carregados na splash |
+
+### Estratégia de Cache
+
+```javascript
+// React Query Config
+staleTime: 5 * 60 * 1000,  // 5 minutos
+gcTime: 10 * 60 * 1000,    // 10 minutos
+
+// Cache por tipo de dado:
+- Transações: 2 minutos
+- Categorias: 30 minutos
+- Configurações: 1 hora
+```
+
+---
+
+## 🧪 Testes
+
+```bash
+# Executar testes
+npm test
+
+# Testes com watch mode
+npm run test:watch
+
+# Gerar cobertura
+npm run test:coverage
+```
+
+---
+
+## 📜 Scripts Disponíveis
+
+| Comando | Descrição |
+|---------|-----------|
+| `npm start` | Inicia o Expo |
+| `npm run android` | Abre no emulador Android |
+| `npm run ios` | Abre no simulador iOS |
+| `npm run web` | Abre versão web |
+| `npm test` | Executa testes |
+| `npm run test:coverage` | Gera relatório de cobertura |
+
+---
+
+## 🗺️ Roadmap
+
+### ✅ Concluído
+- [x] Clean Architecture
+- [x] React Query integration
+- [x] Lazy Loading
+- [x] Sistema de cache
+- [x] Programação reativa (Firebase listeners)
+- [x] Autenticação com biometria
+- [x] Criptografia AES-256
+- [x] Validações avançadas
+- [x] Componentização Atomic Design
+
+### 🔜 Próximos Passos
+- [ ] Testes E2E com Detox
+- [ ] PWA Support
+- [ ] Notificações push
+- [ ] Sincronização offline melhorada
+- [ ] Multi-idiomas (i18n)
+
+---
+
+## 👥 Equipe
+
+Desenvolvido pelo **Grupo 6** - FIAP Pós-Tech
+
+---
+
+## 📄 Licença
+
+Este projeto é privado e destinado exclusivamente para fins acadêmicos.

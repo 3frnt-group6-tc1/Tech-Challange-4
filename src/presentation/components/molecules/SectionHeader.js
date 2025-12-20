@@ -1,11 +1,18 @@
-import React from "react";
+import React, { memo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 /**
  * Section Header component for category/list sections
  * Reduces duplication across screens with add buttons and titles
+ * @component
+ * @param {Object} props
+ * @param {string} props.title - Título da seção
+ * @param {string} [props.icon] - Ícone/emoji do título
+ * @param {Function} [props.onAdd] - Callback do botão adicionar
+ * @param {string} [props.addButtonColor] - Cor do botão adicionar
+ * @param {Object} props.theme - Objeto de tema
  */
-export const SectionHeader = ({ title, icon, onAdd, addButtonColor, theme }) => {
+export const SectionHeader = memo(({ title, icon, onAdd, addButtonColor, theme }) => {
   return (
     <View style={styles.container}>
       <Text style={[styles.title, { color: theme.colors.text }]}>
@@ -21,7 +28,9 @@ export const SectionHeader = ({ title, icon, onAdd, addButtonColor, theme }) => 
       )}
     </View>
   );
-};
+});
+
+SectionHeader.displayName = "SectionHeader";
 
 const styles = StyleSheet.create({
   container: {
