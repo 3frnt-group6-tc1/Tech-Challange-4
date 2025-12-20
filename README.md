@@ -392,28 +392,6 @@ npm run test:coverage
 
 ---
 
-## 🗺️ Roadmap
-
-### ✅ Concluído
-- [x] Clean Architecture
-- [x] React Query integration
-- [x] Lazy Loading
-- [x] Sistema de cache
-- [x] Programação reativa (Firebase listeners)
-- [x] Autenticação com biometria
-- [x] Criptografia AES-256
-- [x] Validações avançadas
-- [x] Componentização Atomic Design
-
-### 🔜 Próximos Passos
-- [ ] Testes E2E com Detox
-- [ ] PWA Support
-- [ ] Notificações push
-- [ ] Sincronização offline melhorada
-- [ ] Multi-idiomas (i18n)
-
----
-
 ## 👥 Equipe
 
 Desenvolvido pelo **Grupo 6** - FIAP Pós-Tech
