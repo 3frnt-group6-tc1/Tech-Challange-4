@@ -69,6 +69,10 @@
     "transformIgnorePatterns": [
       "node_modules/(?!(react-native|@react-native|expo|@expo|expo-crypto|expo-secure-store|base64-js|react-native-reanimated|react-native-chart-kit)/)"
     ],
+    "moduleNameMapper": {
+      "^@expo/vector-icons$": "<rootDir>/__tests__/__mocks__/expo-vector-icons.js",
+      "^expo-crypto$": "<rootDir>/__tests__/__mocks__/expo-crypto.js"
+    },
     "collectCoverageFrom": [
       "components/**/*.{js,jsx}",
       "contexts/**/*.{js,jsx}",

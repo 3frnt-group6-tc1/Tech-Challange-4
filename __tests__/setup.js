@@ -150,28 +150,6 @@ jest.mock("firebase/storage", () => ({
   getDownloadURL: jest.fn(),
 }));
 
-// Mock @expo/vector-icons
-jest.mock("@expo/vector-icons", () => {
-  const React = require("react");
-  return {
-    Ionicons: (props) => React.createElement("Ionicons", props),
-    MaterialIcons: (props) => React.createElement("MaterialIcons", props),
-    FontAwesome: (props) => React.createElement("FontAwesome", props),
-    Feather: (props) => React.createElement("Feather", props),
-    AntDesign: (props) => React.createElement("AntDesign", props),
-  };
-});
-
-// Mock expo-crypto
-jest.mock("expo-crypto", () => ({
-  getRandomBytesAsync: jest.fn(() => Promise.resolve(new Uint8Array(32))),
-  digestStringAsync: jest.fn(() => Promise.resolve("mocked-hash")),
-  CryptoDigestAlgorithm: {
-    SHA256: "SHA-256",
-    SHA512: "SHA-512",
-  },
-}));
-
 // Mock expo-secure-store
 jest.mock("expo-secure-store", () => ({
   getItemAsync: jest.fn(() => Promise.resolve(null)),
