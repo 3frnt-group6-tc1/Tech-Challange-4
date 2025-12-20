@@ -34,9 +34,11 @@ export const TransactionsProvider = ({ children }) => {
 
   // Carregar dados do Firestore e configurar listeners
   useEffect(() => {
+    let unsubscribe = null;
+    
     if (user) {
       loadData();
-      setupRealtimeListeners();
+      unsubscribe = setupRealtimeListeners();
     } else {
       // Limpar dados quando usuário faz logout
       setTransactions([]);
@@ -53,6 +55,13 @@ export const TransactionsProvider = ({ children }) => {
         ],
       });
     }
+    
+    // Cleanup listeners quando componente desmontar ou user mudar
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [user]);
 
 

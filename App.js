@@ -8,8 +8,10 @@ import { AuthProvider, useAuth } from "./src/domain/contexts/AuthContext";
 import { ThemeProvider, useTheme } from "./src/domain/contexts/ThemeContext";
 import { TransactionsProvider } from "./src/domain/contexts/TransactionsContext";
 import { CurrencyProvider } from "./src/domain/contexts/CurrencyContext";
+import { NotificationProvider } from "./src/domain/contexts/NotificationContext";
 import { cacheService } from "./src/infrastructure/services";
 import LoadingScreen from "./src/presentation/components/legacy/LoadingScreen";
+import RealtimeNotifier from "./src/presentation/components/RealtimeNotifier";
 
 // Lazy load screens for better performance
 const LoginScreen = lazy(() => import("./src/presentation/screens/LoginScreen"));
@@ -210,7 +212,10 @@ const App = () => {
       <AuthProvider>
         <CurrencyProvider>
           <TransactionsProvider>
-            <AppNavigator />
+            <NotificationProvider>
+              <RealtimeNotifier />
+              <AppNavigator />
+            </NotificationProvider>
           </TransactionsProvider>
         </CurrencyProvider>
       </AuthProvider>

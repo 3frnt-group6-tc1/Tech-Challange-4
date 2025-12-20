@@ -283,6 +283,49 @@ class FirestoreService {
       return () => {};
     }
   }
+
+  // Listener em tempo real para categorias
+  subscribeToUserCategories(userId, callback) {
+    const defaultCategories = {
+      income: ["Salário", "Freelance", "Investimentos", "Vendas", "Outros"],
+      expense: [
+        "Alimentação",
+        "Transporte",
+        "Moradia",
+        "Saúde",
+        "Lazer",
+        "Outros",
+      ],
+    };
+
+    try {
+      const categoriesRef = doc(db, "users", userId, "settings", "categories");
+      
+      return onSnapshot(
+        categoriesRef,
+        (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            callback(data.categories || defaultCategories);
+          } else {
+            callback(defaultCategories);
+          }
+        },
+        (error) => {
+          if (error.code === 'permission-denied') {
+            console.warn("Permissão negada para categorias. Configure as regras do Firestore.");
+            callback(defaultCategories);
+          } else {
+            console.error("Erro no listener de categorias:", error);
+            callback(defaultCategories);
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Erro ao configurar listener de categorias:", error);
+      return () => {};
+    }
+  }
 }
 
 export default new FirestoreService();
