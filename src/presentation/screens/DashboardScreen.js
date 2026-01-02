@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import { useTheme } from "../../domain/contexts/ThemeContext";
 import { useTransactions } from "../../domain/contexts/TransactionsContext";
 import { useCurrency } from "../../domain/contexts/CurrencyContext";
 import { Card } from "../components";
+import { useAutoRefresh } from "../hooks/useAppState";
 
 const DashboardScreen = React.memo(() => {
   const { theme } = useTheme();
@@ -29,6 +30,23 @@ const DashboardScreen = React.memo(() => {
     setRefreshing(true);
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
+
+  // Auto-refresh quando app volta do background (após 30 segundos)
+  const { isRefreshing: isAutoRefreshing, lastRefreshTime } = useAutoRefresh(
+    onRefresh,
+    {
+      enabled: true,
+      minBackgroundTime: 30000, // 30 segundos
+      refreshOnMount: false,
+    }
+  );
+
+  // Log para debug - remover em produção
+  useEffect(() => {
+    if (lastRefreshTime) {
+      console.log("Dashboard atualizado automaticamente em:", lastRefreshTime.toLocaleTimeString());
+    }
+  }, [lastRefreshTime]);
 
   // Memoize financial totals
   const financialData = useMemo(() => {
@@ -162,7 +180,10 @@ const DashboardScreen = React.memo(() => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl 
+            refreshing={refreshing || isAutoRefreshing} 
+            onRefresh={onRefresh} 
+          />
         }
       >
         <Animated.View entering={FadeInDown.delay(100).duration(600)}>

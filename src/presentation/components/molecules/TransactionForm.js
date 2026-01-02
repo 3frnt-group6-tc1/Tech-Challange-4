@@ -1,7 +1,51 @@
+/**
+ * @fileoverview Formulário de transação reutilizável
+ * @module presentation/components/molecules/TransactionForm
+ */
+
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Input, Button } from "../atoms";
 
+/**
+ * Formulário molecular para criação/edição de transações
+ * 
+ * @component
+ * @description
+ * Componente molecular seguindo Atomic Design que combina
+ * inputs atômicos para criar um formulário completo de transação.
+ * Inclui validação integrada e estados de loading.
+ * 
+ * @param {Object} props - Propriedades do componente
+ * @param {Function} props.onSubmit - Callback ao submeter formulário válido
+ * @param {Object} [props.initialData={}] - Dados iniciais do formulário
+ * @param {Object} [props.validationRules={}] - Regras de validação por campo
+ * @param {Function} [props.onCancel] - Callback ao cancelar (mostra botão se definido)
+ * @param {boolean} [props.isLoading=false] - Estado de loading durante submissão
+ * @param {string} [props.submitLabel='Salvar'] - Texto do botão de submit
+ * 
+ * @example
+ * // Formulário básico de criação
+ * <TransactionForm
+ *   onSubmit={handleCreate}
+ *   validationRules={{
+ *     amount: { required: true, message: 'Valor é obrigatório' },
+ *     description: { required: true, minLength: 3 }
+ *   }}
+ * />
+ * 
+ * @example
+ * // Formulário de edição com dados iniciais
+ * <TransactionForm
+ *   initialData={transaction}
+ *   onSubmit={handleUpdate}
+ *   onCancel={handleClose}
+ *   isLoading={isSaving}
+ *   submitLabel="Atualizar"
+ * />
+ * 
+ * @returns {React.ReactElement} Componente TransactionForm renderizado
+ */
 export const TransactionForm = React.memo(
   ({
     onSubmit,

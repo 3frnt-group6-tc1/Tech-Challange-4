@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useTransactions } from "../../domain/contexts/TransactionsContext";
+import { useDebouncedSearch } from "./useDebouncedSearch";
 
 export const useTransactionsScreen = () => {
   const { transactions, updateTransaction, deleteTransaction } =
@@ -19,6 +20,12 @@ export const useTransactionsScreen = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
+  // Aplicar debounce ao termo de busca para melhor performance
+  const debouncedSearchTerm = useDebouncedSearch(filters.search, 300);
+  
+  // Indicador de busca pendente (enquanto aguarda debounce)
+  const isSearchPending = filters.search !== debouncedSearchTerm;
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => setRefreshing(false), 1000);
@@ -35,8 +42,9 @@ export const useTransactionsScreen = () => {
       filtered = filtered.filter((t) => t.category === filters.category);
     }
 
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
+    // Usar termo de busca com debounce para melhor performance
+    if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase();
       filtered = filtered.filter(
         (t) =>
           t.title.toLowerCase().includes(searchLower) ||
@@ -90,7 +98,7 @@ export const useTransactionsScreen = () => {
 
       return 0;
     });
-  }, [transactions, filters]);
+  }, [transactions, filters, debouncedSearchTerm]);
 
   const filteredTransactions = useMemo(
     () => getFilteredTransactions(),
@@ -192,11 +200,13 @@ export const useTransactionsScreen = () => {
     showFilters,
     currentPage,
     totalPages,
+    isSearchPending,
 
     // Data
     paginatedTransactions,
     filteredTransactions,
     categories,
+    debouncedSearchTerm,
 
     // Handlers
     onRefresh,

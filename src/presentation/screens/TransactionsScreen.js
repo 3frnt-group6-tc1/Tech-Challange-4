@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, RefreshControl, FlatList, Text } from "react-native";
+import { View, StyleSheet, RefreshControl, FlatList, Text, ActivityIndicator } from "react-native";
 import { useTheme } from "../../domain/contexts/ThemeContext";
 import { Card } from "../components";
 import { ValidatedInput } from "../components/legacy/form/ValidatedInput";
@@ -22,6 +22,7 @@ const TransactionsScreen = ({ navigation }) => {
     showFilters,
     currentPage,
     totalPages,
+    isSearchPending,
     paginatedTransactions,
     filteredTransactions,
     categories,
@@ -51,12 +52,21 @@ const TransactionsScreen = ({ navigation }) => {
 
       <View style={styles.content}>
         <Card style={styles.searchCard}>
-          <ValidatedInput
-            placeholder="Buscar transações..."
-            value={filters.search}
-            onChangeText={handleSearchChange}
-            style={styles.searchInput}
-          />
+          <View style={styles.searchContainer}>
+            <ValidatedInput
+              placeholder="Buscar transações..."
+              value={filters.search}
+              onChangeText={handleSearchChange}
+              style={styles.searchInput}
+            />
+            {isSearchPending && (
+              <ActivityIndicator 
+                size="small" 
+                color={theme.colors.primary} 
+                style={styles.searchIndicator}
+              />
+            )}
+          </View>
         </Card>
 
         {hasActiveFilters() && (
@@ -155,8 +165,16 @@ const styles = StyleSheet.create({
   searchCard: {
     marginBottom: 16,
   },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   searchInput: {
+    flex: 1,
     margin: 0,
+  },
+  searchIndicator: {
+    marginLeft: 8,
   },
   transactionCard: {
     marginBottom: 12,

@@ -17,8 +17,11 @@
     "@react-navigation/bottom-tabs": "^7.4.7",
     "@react-navigation/native": "^7.1.17",
     "@react-navigation/stack": "^7.4.8",
+    "@tanstack/react-query": "^5.90.12",
+    "crypto-js": "^4.2.0",
     "expo": "~54.0.27",
     "expo-asset": "^12.0.9",
+    "expo-crypto": "^15.0.8",
     "expo-file-system": "^19.0.14",
     "expo-image": "~3.0.10",
     "expo-image-picker": "^17.0.8",
@@ -64,8 +67,12 @@
       "/ios/"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|@react-native|expo|@expo|react-native-reanimated|react-native-chart-kit)/)"
+      "node_modules/(?!(react-native|@react-native|expo|@expo|expo-crypto|expo-secure-store|base64-js|react-native-reanimated|react-native-chart-kit)/)"
     ],
+    "moduleNameMapper": {
+      "^@expo/vector-icons$": "<rootDir>/__tests__/__mocks__/expo-vector-icons.js",
+      "^expo-crypto$": "<rootDir>/__tests__/__mocks__/expo-crypto.js"
+    },
     "collectCoverageFrom": [
       "components/**/*.{js,jsx}",
       "contexts/**/*.{js,jsx}",

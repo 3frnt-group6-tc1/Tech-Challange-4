@@ -1,15 +1,24 @@
+/**
+ * @fileoverview Arquivo principal da aplicação React Native
+ * @module App
+ * 
+ * @description
+ * Ponto de entrada da aplicação de gerenciamento financeiro.
+ * Configura navegação, providers e lazy loading de telas.
+ */
+
 import React, { useEffect, lazy, Suspense } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Text, StatusBar } from "react-native";
 
-import { AuthProvider, useAuth } from "./src/domain/contexts/AuthContext";
-import { ThemeProvider, useTheme } from "./src/domain/contexts/ThemeContext";
-import { TransactionsProvider } from "./src/domain/contexts/TransactionsContext";
-import { CurrencyProvider } from "./src/domain/contexts/CurrencyContext";
+import { AppProvider } from "./src/domain/contexts/AppProvider";
+import { useAuth } from "./src/domain/contexts/AuthContext";
+import { useTheme } from "./src/domain/contexts/ThemeContext";
 import { cacheService } from "./src/infrastructure/services";
 import LoadingScreen from "./src/presentation/components/legacy/LoadingScreen";
+import RealtimeNotifier from "./src/presentation/components/RealtimeNotifier";
 
 // Lazy load screens for better performance
 const LoginScreen = lazy(() => import("./src/presentation/screens/LoginScreen"));
@@ -197,6 +206,15 @@ const AppNavigator = () => {
   );
 };
 
+/**
+ * Componente principal da aplicação
+ * 
+ * @description
+ * Inicializa serviços críticos e configura a árvore de providers.
+ * Utiliza AppProvider para gerenciar todos os contextos de forma organizada.
+ * 
+ * @returns {React.ReactElement} Aplicação renderizada
+ */
 const App = () => {
   // Inicializar cache service na inicialização do app
   useEffect(() => {
@@ -206,15 +224,10 @@ const App = () => {
   }, []);
 
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <CurrencyProvider>
-          <TransactionsProvider>
-            <AppNavigator />
-          </TransactionsProvider>
-        </CurrencyProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <AppProvider>
+      <RealtimeNotifier />
+      <AppNavigator />
+    </AppProvider>
   );
 };
 

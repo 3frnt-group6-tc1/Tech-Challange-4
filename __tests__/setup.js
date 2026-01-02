@@ -67,6 +67,34 @@ jest.mock("react-native", () => {
     Dimensions: {
       get: jest.fn(() => ({ width: 375, height: 667 })),
     },
+    Animated: {
+      View: React.forwardRef((props, ref) =>
+        React.createElement("View", { ...props, ref })
+      ),
+      Text: React.forwardRef((props, ref) =>
+        React.createElement("Text", { ...props, ref })
+      ),
+      Value: jest.fn(() => ({
+        interpolate: jest.fn(() => 0),
+        setValue: jest.fn(),
+      })),
+      timing: jest.fn(() => ({
+        start: jest.fn((callback) => callback && callback({ finished: true })),
+        stop: jest.fn(),
+      })),
+      spring: jest.fn(() => ({
+        start: jest.fn((callback) => callback && callback({ finished: true })),
+        stop: jest.fn(),
+      })),
+      parallel: jest.fn(() => ({
+        start: jest.fn((callback) => callback && callback({ finished: true })),
+        stop: jest.fn(),
+      })),
+      sequence: jest.fn(() => ({
+        start: jest.fn((callback) => callback && callback({ finished: true })),
+        stop: jest.fn(),
+      })),
+    },
   };
 });
 
@@ -120,6 +148,38 @@ jest.mock("firebase/storage", () => ({
   ref: jest.fn(),
   uploadBytes: jest.fn(),
   getDownloadURL: jest.fn(),
+}));
+
+// Mock expo-secure-store
+jest.mock("expo-secure-store", () => ({
+  getItemAsync: jest.fn(() => Promise.resolve(null)),
+  setItemAsync: jest.fn(() => Promise.resolve()),
+  deleteItemAsync: jest.fn(() => Promise.resolve()),
+  WHEN_UNLOCKED: "WHEN_UNLOCKED",
+}));
+
+// Mock EncryptionService
+jest.mock("../src/infrastructure/services/EncryptionService", () => ({
+  encryptionService: {
+    initialize: jest.fn(() => Promise.resolve()),
+    encrypt: jest.fn((data) => Promise.resolve(`encrypted_${data}`)),
+    decrypt: jest.fn((data) => Promise.resolve(data.replace("encrypted_", ""))),
+    encryptTransaction: jest.fn((transaction) => Promise.resolve(transaction)),
+    decryptTransaction: jest.fn((transaction) => Promise.resolve(transaction)),
+    decryptTransactions: jest.fn((transactions) => Promise.resolve(transactions)),
+    hashPassword: jest.fn((password) => Promise.resolve(`hashed_${password}`)),
+    isInitialized: true,
+  },
+  default: {
+    initialize: jest.fn(() => Promise.resolve()),
+    encrypt: jest.fn((data) => Promise.resolve(`encrypted_${data}`)),
+    decrypt: jest.fn((data) => Promise.resolve(data.replace("encrypted_", ""))),
+    encryptTransaction: jest.fn((transaction) => Promise.resolve(transaction)),
+    decryptTransaction: jest.fn((transaction) => Promise.resolve(transaction)),
+    decryptTransactions: jest.fn((transactions) => Promise.resolve(transactions)),
+    hashPassword: jest.fn((password) => Promise.resolve(`hashed_${password}`)),
+    isInitialized: true,
+  },
 }));
 
 // Setup test timeout

@@ -2,8 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
 import firestoreService from "../../infrastructure/services/firestoreService";
 import { cacheService } from "../../infrastructure/services";
+import { encryptionService } from "../../infrastructure/services/EncryptionService";
 
-const TransactionsContext = createContext();
+export const TransactionsContext = createContext();
 
 export const useTransactions = () => {
   const context = useContext(TransactionsContext);
@@ -31,12 +32,62 @@ export const TransactionsProvider = ({ children }) => {
     ],
   });
   const [loading, setLoading] = useState(false);
+  const [encryptionReady, setEncryptionReady] = useState(false);
+
+  // Inicializar serviço de criptografia
+  useEffect(() => {
+    const initEncryption = async () => {
+      try {
+        await encryptionService.initialize();
+        setEncryptionReady(true);
+        console.log("TransactionsContext: Criptografia inicializada");
+      } catch (error) {
+        console.error("TransactionsContext: Erro ao inicializar criptografia", error);
+        // Continuar mesmo sem criptografia para não quebrar o app
+        setEncryptionReady(true);
+      }
+    };
+    initEncryption();
+  }, []);
+
+  /**
+   * Descriptografa uma lista de transações
+   * Mantém compatibilidade com dados antigos não criptografados
+   */
+  const decryptTransactions = async (transactionsList) => {
+    if (!encryptionService.isInitialized) {
+      return transactionsList;
+    }
+
+    try {
+      const decrypted = await Promise.all(
+        transactionsList.map(async (transaction) => {
+          // Se não está criptografado, retornar como está
+          if (!transaction._isEncrypted) {
+            return transaction;
+          }
+          try {
+            return await encryptionService.decryptTransaction(transaction);
+          } catch (error) {
+            console.warn("Erro ao descriptografar transação:", transaction.id, error);
+            return transaction; // Retornar original em caso de erro
+          }
+        })
+      );
+      return decrypted;
+    } catch (error) {
+      console.error("Erro ao descriptografar transações:", error);
+      return transactionsList;
+    }
+  };
 
   // Carregar dados do Firestore e configurar listeners
   useEffect(() => {
+    let unsubscribe = null;
+    
     if (user) {
       loadData();
-      setupRealtimeListeners();
+      unsubscribe = setupRealtimeListeners();
     } else {
       // Limpar dados quando usuário faz logout
       setTransactions([]);
@@ -53,6 +104,13 @@ export const TransactionsProvider = ({ children }) => {
         ],
       });
     }
+    
+    // Cleanup listeners quando componente desmontar ou user mudar
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, [user]);
 
 
@@ -68,7 +126,7 @@ export const TransactionsProvider = ({ children }) => {
       setLoading(true);
       
       // Usar cache service para otimizar requisições
-      const [userTransactions, userCategories, userRecurring] =
+      const [rawTransactions, userCategories, rawRecurring] =
         await Promise.all([
           cacheService.getTransactions(
             user.uid,
@@ -83,6 +141,10 @@ export const TransactionsProvider = ({ children }) => {
             () => firestoreService.getUserRecurringTransactions(user.uid)
           ),
         ]);
+
+      // Descriptografar transações carregadas
+      const userTransactions = await decryptTransactions(rawTransactions);
+      const userRecurring = await decryptTransactions(rawRecurring);
 
       console.log("Dados carregados com sucesso:", {
         transações: userTransactions.length,
@@ -114,12 +176,14 @@ export const TransactionsProvider = ({ children }) => {
       const unsubscribeTransactions =
         firestoreService.subscribeToUserTransactions(
           user.uid,
-          (transactions) => {
+          async (rawTransactions) => {
             console.log(
               "Transações atualizadas em tempo real:",
-              transactions.length
+              rawTransactions.length
             );
-            setTransactions(transactions);
+            // Descriptografar transações recebidas
+            const decryptedTransactions = await decryptTransactions(rawTransactions);
+            setTransactions(decryptedTransactions);
           }
         );
 
@@ -127,12 +191,14 @@ export const TransactionsProvider = ({ children }) => {
       const unsubscribeRecurring =
         firestoreService.subscribeToUserRecurringTransactions(
           user.uid,
-          (recurringTransactions) => {
+          async (rawRecurringTransactions) => {
             console.log(
               "Transações recorrentes atualizadas:",
-              recurringTransactions.length
+              rawRecurringTransactions.length
             );
-            setRecurringTransactions(recurringTransactions);
+            // Descriptografar transações recorrentes recebidas
+            const decryptedRecurring = await decryptTransactions(rawRecurringTransactions);
+            setRecurringTransactions(decryptedRecurring);
           }
         );
 
@@ -151,11 +217,21 @@ export const TransactionsProvider = ({ children }) => {
     if (!user) return;
 
     try {
-      const newTransaction = {
+      let newTransaction = {
         ...transaction,
         date: transaction.date || new Date().toISOString().split("T")[0],
         imageUrl: transaction.imageUrl || null,
       };
+
+      // Criptografar transação antes de salvar
+      if (encryptionService.isInitialized) {
+        try {
+          newTransaction = await encryptionService.encryptTransaction(newTransaction);
+          console.log("Transação criptografada antes de salvar");
+        } catch (encryptError) {
+          console.warn("Erro ao criptografar transação, salvando sem criptografia:", encryptError);
+        }
+      }
 
       await firestoreService.addUserTransaction(user.uid, newTransaction);
       // Invalidar cache para forçar atualização na próxima busca
@@ -171,7 +247,7 @@ export const TransactionsProvider = ({ children }) => {
     if (!user) return;
 
     try {
-      const updates = {
+      let updates = {
         ...updatedTransaction,
         imageUrl: updatedTransaction.hasOwnProperty("imageUrl")
           ? updatedTransaction.imageUrl
@@ -179,11 +255,22 @@ export const TransactionsProvider = ({ children }) => {
       };
 
       // Remove o id dos updates pois não deve ser atualizado
+      const transactionId = updates.id;
       delete updates.id;
+
+      // Criptografar transação antes de atualizar
+      if (encryptionService.isInitialized) {
+        try {
+          updates = await encryptionService.encryptTransaction(updates);
+          console.log("Transação criptografada antes de atualizar");
+        } catch (encryptError) {
+          console.warn("Erro ao criptografar transação, atualizando sem criptografia:", encryptError);
+        }
+      }
 
       await firestoreService.updateUserTransaction(
         user.uid,
-        updatedTransaction.id,
+        transactionId,
         updates
       );
       // Invalidar cache para forçar atualização na próxima busca
@@ -319,12 +406,22 @@ export const TransactionsProvider = ({ children }) => {
     if (!user) return;
 
     try {
-      const newRecurring = {
+      let newRecurring = {
         ...recurringTransaction,
         nextDueDate:
           recurringTransaction.nextDueDate ||
           new Date().toISOString().split("T")[0],
       };
+
+      // Criptografar transação recorrente antes de salvar
+      if (encryptionService.isInitialized) {
+        try {
+          newRecurring = await encryptionService.encryptTransaction(newRecurring);
+          console.log("Transação recorrente criptografada antes de salvar");
+        } catch (encryptError) {
+          console.warn("Erro ao criptografar transação recorrente:", encryptError);
+        }
+      }
 
       await firestoreService.addUserRecurringTransaction(
         user.uid,
@@ -343,12 +440,23 @@ export const TransactionsProvider = ({ children }) => {
     if (!user) return;
 
     try {
-      const updates = { ...updatedRecurring };
+      let updates = { ...updatedRecurring };
+      const recurringId = updates.id;
       delete updates.id; // Remove o id dos updates
+
+      // Criptografar antes de atualizar
+      if (encryptionService.isInitialized) {
+        try {
+          updates = await encryptionService.encryptTransaction(updates);
+          console.log("Transação recorrente criptografada antes de atualizar");
+        } catch (encryptError) {
+          console.warn("Erro ao criptografar transação recorrente:", encryptError);
+        }
+      }
 
       await firestoreService.updateUserRecurringTransaction(
         user.uid,
-        updatedRecurring.id,
+        recurringId,
         updates
       );
       // Invalidar cache de transações recorrentes
@@ -424,12 +532,12 @@ export const TransactionsProvider = ({ children }) => {
       }
     }
 
-    // Criar todas as transações em paralelo
+    // Criar todas as transações em paralelo (usando addTransaction para criptografar)
     if (transactionsToCreate.length > 0) {
       try {
         await Promise.all(
           transactionsToCreate.map((transaction) =>
-            firestoreService.addUserTransaction(user.uid, transaction)
+            addTransaction(transaction)
           )
         );
       } catch (error) {
