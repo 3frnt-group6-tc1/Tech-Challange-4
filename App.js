@@ -18,6 +18,7 @@ import { useAuth } from "./src/domain/contexts/AuthContext";
 import { useTheme } from "./src/domain/contexts/ThemeContext";
 import { cacheService } from "./src/infrastructure/services";
 import LoadingScreen from "./src/presentation/components/legacy/LoadingScreen";
+import SimpleLoadingScreen from "./src/presentation/components/legacy/SimpleLoadingScreen";
 import RealtimeNotifier from "./src/presentation/components/RealtimeNotifier";
 
 // Lazy load screens for better performance
