@@ -1,12 +1,8 @@
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  initializeAuth,
-  getReactNativePersistence,
-} from "firebase/auth";
+import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 
 // gs://techchallenge3-1d9d7.firebasestorage.app
 const firebaseConfig = {
@@ -19,9 +15,20 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+
+// Configurar auth baseado na plataforma
+let auth;
+if (Platform.OS === "web") {
+  // Na web, usar getAuth padrão (usa IndexedDB por padrão)
+  auth = getAuth(app);
+} else {
+  // Em mobile (iOS/Android), usar AsyncStorage para persistência
+  const AsyncStorage = require("@react-native-async-storage/async-storage").default;
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+}
+
 const storage = getStorage(app);
 const db = getFirestore(app);
 
